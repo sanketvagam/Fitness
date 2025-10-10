@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { useFitnessData } from "@/hooks/useFitnessData";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSupabaseFitnessData } from "@/hooks/useSupabaseFitnessData";
+import { useProfile } from "@/hooks/useProfile";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useChallenges } from "@/hooks/useChallenges";
 import { useLeaderboard } from "@/hooks/useLeaderboard";
@@ -22,7 +24,8 @@ import { Leaderboard } from "@/components/Leaderboard";
 import { ShareProgressCard } from "@/components/ShareProgressCard";
 import { HabitTracker } from "@/components/HabitTracker";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { Target, TrendingUp, Award, Flame, Settings, Link2, Trophy, Users } from "lucide-react";
+import { UserMenu } from "@/components/UserMenu";
+import { Target, TrendingUp, Award, Flame, Link2, Trophy, Users } from "lucide-react";
 import { UserProfile, BMIData, CalorieData } from "@/types/fitness";
 import { calculateBMI, calculateCalories } from "@/utils/calculations";
 import { Button } from "@/components/ui/button";
@@ -30,7 +33,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 
 const Index = () => {
-  const { goals, addGoal, deleteGoal, addActivity, getStats } = useFitnessData();
+  const { user, loading: authLoading, signOut } = useAuth();
+  const navigate = useNavigate();
+  const { goals, addGoal, deleteGoal, addActivity, getStats } = useSupabaseFitnessData();
+  const { profile: userProfile, saveProfile, loading: profileLoading } = useProfile();
   const stats = getStats();
   const { allBadges, unlockedBadges, lockedBadges, userLevel, checkAndUnlock } = useAchievements();
   const { activeChallenges, joinedChallenges, userChallenges, joinChallenge, leaveChallenge } = useChallenges();
@@ -38,10 +44,15 @@ const Index = () => {
   const [activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState<string>("");
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
-  const [userProfile, setUserProfile] = useLocalStorage<UserProfile | null>("fitforge-profile", null);
   const [bmiData, setBmiData] = useState<BMIData | null>(null);
   const [calorieData, setCalorieData] = useState<CalorieData | null>(null);
   const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/');
+    }
+  }, [user, authLoading, navigate]);
 
   // Check for badge unlocks based on stats
   useEffect(() => {
@@ -59,19 +70,27 @@ const Index = () => {
   }, [userProfile]);
 
   useEffect(() => {
-    if (!userProfile) {
+    if (!profileLoading && !userProfile && user) {
       setProfileDialogOpen(true);
     }
-  }, []);
+  }, [profileLoading, userProfile, user]);
 
   const handleAddActivity = (goalId: string) => {
     setSelectedGoalId(goalId);
     setActivityDialogOpen(true);
   };
 
-  const handleSaveProfile = (profile: UserProfile) => {
-    setUserProfile(profile);
+  const handleSaveProfile = async (profile: UserProfile) => {
+    await saveProfile(profile);
   };
+
+  if (authLoading || profileLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,17 +121,8 @@ const Index = () => {
             >
               <Link2 className="w-4 h-4" />
             </Button>
-            {userProfile && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setProfileDialogOpen(true)}
-                title="Edit Profile"
-              >
-                <Settings className="w-4 h-4" />
-              </Button>
-            )}
             <CreateGoalDialog onCreateGoal={addGoal} />
+            <UserMenu onOpenProfile={() => setProfileDialogOpen(true)} />
           </div>
           </div>
         </div>
