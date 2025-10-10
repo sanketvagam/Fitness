@@ -111,28 +111,47 @@ export const useIntegrations = () => {
     fetchSyncHistory();
   }, [fetchIntegrations, fetchSyncHistory]);
 
-  const connectIntegration = async (provider: string, mockData?: any) => {
+  const connectIntegration = async (provider: string) => {
     if (!user) return { success: false, error: 'Not authenticated' };
 
     try {
-      const { data, error } = await supabase
-        .from('integrations')
-        .insert({
-          user_id: user.id,
-          provider,
-          provider_user_id: mockData?.userId || `${provider}_${Date.now()}`,
-          access_token: mockData?.accessToken || 'mock_token',
-          status: 'active',
-          settings: mockData?.settings || {},
-        })
-        .select()
-        .single();
+      if (provider === 'strava') {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const stravaClientId = import.meta.env.VITE_STRAVA_CLIENT_ID;
 
-      if (error) throw error;
+        if (!stravaClientId) {
+          toast.error('Strava integration not configured');
+          return { success: false, error: 'Strava client ID not configured' };
+        }
 
-      await fetchIntegrations();
-      toast.success(`${provider} connected successfully!`);
-      return { success: true, data };
+        const redirectUri = `${supabaseUrl}/functions/v1/strava-oauth-callback`;
+        const scope = 'read,activity:read_all,activity:read';
+
+        const authUrl = `https://www.strava.com/oauth/authorize?client_id=${stravaClientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${user.id}`;
+
+        window.location.href = authUrl;
+
+        return { success: true, data: { redirecting: true } };
+      } else {
+        const { data, error } = await supabase
+          .from('integrations')
+          .insert({
+            user_id: user.id,
+            provider,
+            provider_user_id: `${provider}_${Date.now()}`,
+            access_token: 'mock_token',
+            status: 'active',
+            settings: {},
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        await fetchIntegrations();
+        toast.success(`${provider} connected successfully!`);
+        return { success: true, data };
+      }
     } catch (error: any) {
       console.error('Error connecting integration:', error);
       toast.error(error.message || 'Failed to connect integration');
@@ -166,56 +185,78 @@ export const useIntegrations = () => {
     if (!user) return { success: false, error: 'Not authenticated' };
 
     setSyncing(true);
-    const startedAt = new Date().toISOString();
 
     try {
-      const mockActivities = generateMockActivities(provider);
+      if (provider === 'strava') {
+        const { data: { session } } = await supabase.auth.getSession();
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
+        if (!session) {
+          throw new Error('Not authenticated');
+        }
 
-      const { error: historyError } = await supabase
-        .from('sync_history')
-        .insert({
-          integration_id: integrationId,
-          user_id: user.id,
-          sync_type: 'manual',
-          status: 'success',
-          activities_synced: mockActivities.length,
-          started_at: startedAt,
-          completed_at: new Date().toISOString(),
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+        const response = await fetch(`${supabaseUrl}/functions/v1/strava-sync-activities`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+            'apikey': supabaseAnonKey,
+          },
+          body: JSON.stringify({
+            integration_id: integrationId,
+          }),
         });
 
-      if (historyError) throw historyError;
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to sync activities');
+        }
 
-      const { error: updateError } = await supabase
-        .from('integrations')
-        .update({ last_sync: new Date().toISOString() })
-        .eq('id', integrationId);
+        const result = await response.json();
 
-      if (updateError) throw updateError;
+        await fetchIntegrations();
+        await fetchSyncHistory();
 
-      await fetchIntegrations();
-      await fetchSyncHistory();
+        toast.success(`Synced ${result.activities_synced} activities from Strava!`);
+        return { success: true, activities: result.imported_activities };
+      } else {
+        const startedAt = new Date().toISOString();
+        const mockActivities = generateMockActivities(provider);
 
-      toast.success(`Synced ${mockActivities.length} activities from ${provider}!`);
-      return { success: true, activities: mockActivities };
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        const { error: historyError } = await supabase
+          .from('sync_history')
+          .insert({
+            integration_id: integrationId,
+            user_id: user.id,
+            sync_type: 'manual',
+            status: 'success',
+            activities_synced: mockActivities.length,
+            started_at: startedAt,
+            completed_at: new Date().toISOString(),
+          });
+
+        if (historyError) throw historyError;
+
+        const { error: updateError } = await supabase
+          .from('integrations')
+          .update({ last_sync: new Date().toISOString() })
+          .eq('id', integrationId);
+
+        if (updateError) throw updateError;
+
+        await fetchIntegrations();
+        await fetchSyncHistory();
+
+        toast.success(`Synced ${mockActivities.length} activities from ${provider}!`);
+        return { success: true, activities: mockActivities };
+      }
     } catch (error: any) {
       console.error('Error syncing integration:', error);
-
-      await supabase
-        .from('sync_history')
-        .insert({
-          integration_id: integrationId,
-          user_id: user.id,
-          sync_type: 'manual',
-          status: 'failed',
-          activities_synced: 0,
-          error_message: error.message,
-          started_at: startedAt,
-          completed_at: new Date().toISOString(),
-        });
-
-      toast.error('Failed to sync data');
+      toast.error(error.message || 'Failed to sync data');
       return { success: false, error: error.message };
     } finally {
       setSyncing(false);

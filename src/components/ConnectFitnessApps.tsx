@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -10,6 +10,7 @@ import { CheckCircle2, RefreshCw, Link2, Unlink, Clock, Activity, TrendingUp, Al
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { format, formatDistanceToNow } from 'date-fns';
+import { toast } from 'sonner';
 
 interface ConnectFitnessAppsProps {
   open: boolean;
@@ -74,13 +75,28 @@ const fitnessApps = [
 ];
 
 export function ConnectFitnessApps({ open, onOpenChange }: ConnectFitnessAppsProps) {
-  const { integrations, syncHistory, loading, syncing, connectIntegration, disconnectIntegration, syncIntegration, isConnected, getIntegration } = useIntegrations();
+  const { integrations, syncHistory, loading, syncing, connectIntegration, disconnectIntegration, syncIntegration, isConnected, getIntegration, refetch } = useIntegrations();
   const [connectingApp, setConnectingApp] = useState<string | null>(null);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const stravaConnected = urlParams.get('strava_connected');
+
+    if (stravaConnected === 'true') {
+      toast.success('Strava connected successfully! You can now sync your activities.');
+      refetch();
+
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [refetch]);
 
   const handleConnect = async (appId: string) => {
     setConnectingApp(appId);
     await connectIntegration(appId);
-    setConnectingApp(null);
+    if (appId !== 'strava') {
+      setConnectingApp(null);
+    }
   };
 
   const handleDisconnect = async (appId: string) => {
