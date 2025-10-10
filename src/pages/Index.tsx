@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSupabaseFitnessData } from "@/hooks/useSupabaseFitnessData";
 import { useProfile } from "@/hooks/useProfile";
+import { useActivities } from "@/hooks/useActivities";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useChallenges } from "@/hooks/useChallenges";
 import { useLeaderboard } from "@/hooks/useLeaderboard";
@@ -25,6 +26,9 @@ import { ShareProgressCard } from "@/components/ShareProgressCard";
 import { HabitTracker } from "@/components/HabitTracker";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { UserMenu } from "@/components/UserMenu";
+import { QuickActivityWidget } from "@/components/QuickActivityWidget";
+import { ActivityFeed } from "@/components/ActivityFeed";
+import { ActivityAnalytics } from "@/components/ActivityAnalytics";
 import { Target, TrendingUp, Award, Flame, Link2, Trophy, Users } from "lucide-react";
 import { UserProfile, BMIData, CalorieData } from "@/types/fitness";
 import { calculateBMI, calculateCalories } from "@/utils/calculations";
@@ -35,8 +39,9 @@ import { motion } from "framer-motion";
 const Index = () => {
   const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
-  const { goals, addGoal, deleteGoal, addActivity, getStats } = useSupabaseFitnessData();
+  const { goals, addGoal, deleteGoal, addActivity, getStats, refetch: refetchGoals } = useSupabaseFitnessData();
   const { profile: userProfile, saveProfile, loading: profileLoading } = useProfile();
+  const { activities, getRecentActivities, refetch: refetchActivities } = useActivities();
   const stats = getStats();
   const { allBadges, unlockedBadges, lockedBadges, userLevel, checkAndUnlock } = useAchievements();
   const { activeChallenges, joinedChallenges, userChallenges, joinChallenge, leaveChallenge } = useChallenges();
@@ -130,8 +135,9 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="activities">Activities</TabsTrigger>
             <TabsTrigger value="progress">Progress</TabsTrigger>
             <TabsTrigger value="meals">Meals</TabsTrigger>
             <TabsTrigger value="habits">Habits</TabsTrigger>
@@ -169,6 +175,39 @@ const Index = () => {
               />
             </div>
 
+            {/* Quick Activity Widget */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-1">
+                <QuickActivityWidget
+                  onLogActivity={async (activity) => {
+                    if (goals.length === 0) {
+                      return;
+                    }
+                    const matchingGoal = goals.find(
+                      (g) =>
+                        (activity.type === 'workout' && g.type === 'gym-frequency') ||
+                        (activity.type === 'distance' && g.type === 'run-distance') ||
+                        (activity.type === 'steps' && g.type === 'daily-steps') ||
+                        (activity.type === 'weight' && g.type === 'weight-loss')
+                    );
+                    if (matchingGoal) {
+                      await addActivity({
+                        goalId: matchingGoal.id,
+                        type: activity.type,
+                        value: activity.value,
+                        date: new Date().toISOString().split('T')[0],
+                      });
+                      refetchActivities();
+                      refetchGoals();
+                    }
+                  }}
+                />
+              </div>
+              <div className="lg:col-span-2">
+                <ActivityFeed activities={getRecentActivities(5)} limit={5} />
+              </div>
+            </div>
+
             {/* BMI & Calorie Section */}
             {userProfile && bmiData && calorieData && (
               <div className="space-y-4">
@@ -182,6 +221,43 @@ const Index = () => {
                 </div>
               </div>
             )}
+          </TabsContent>
+
+          {/* Activities Tab */}
+          <TabsContent value="activities" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-1">
+                <QuickActivityWidget
+                  onLogActivity={async (activity) => {
+                    if (goals.length === 0) {
+                      return;
+                    }
+                    const matchingGoal = goals.find(
+                      (g) =>
+                        (activity.type === 'workout' && g.type === 'gym-frequency') ||
+                        (activity.type === 'distance' && g.type === 'run-distance') ||
+                        (activity.type === 'steps' && g.type === 'daily-steps') ||
+                        (activity.type === 'weight' && g.type === 'weight-loss')
+                    );
+                    if (matchingGoal) {
+                      await addActivity({
+                        goalId: matchingGoal.id,
+                        type: activity.type,
+                        value: activity.value,
+                        date: new Date().toISOString().split('T')[0],
+                      });
+                      refetchActivities();
+                      refetchGoals();
+                    }
+                  }}
+                />
+              </div>
+              <div className="lg:col-span-2">
+                <ActivityFeed activities={activities} />
+              </div>
+            </div>
+
+            <ActivityAnalytics activities={activities} />
           </TabsContent>
 
           {/* Progress Tab */}
