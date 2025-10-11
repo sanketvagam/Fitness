@@ -1,48 +1,60 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { visualizer } from "rollup-plugin-visualizer";
 import viteCompression from "vite-plugin-compression";
 
 // https://vitejs.dev/config/
-export default defineConfig(() => ({
-  server: {
-    host: "::",
-    port: 8080,
-  },
-  plugins: [
-    react(),
-    // Bundle analyzer - generates stats.html (only in analyze mode)
-    ...(process.env.ANALYZE
-      ? [
-          visualizer({
-            open: true,
-            gzipSize: true,
-            brotliSize: true,
-            filename: "dist/stats.html",
-            template: "treemap",
-          }),
-        ]
-      : []),
-    // Gzip compression
+export default defineConfig(async () => {
+  const plugins = [react()];
+
+  // Bundle analyzer - only load if ANALYZE env is set
+  if (process.env.ANALYZE) {
+    try {
+      const { visualizer } = await import("rollup-plugin-visualizer");
+      plugins.push(
+        visualizer({
+          open: true,
+          gzipSize: true,
+          brotliSize: true,
+          filename: "dist/stats.html",
+          template: "treemap",
+        })
+      );
+    } catch (e) {
+      console.warn("rollup-plugin-visualizer not available, skipping bundle analysis");
+    }
+  }
+
+  // Gzip compression
+  plugins.push(
     viteCompression({
       algorithm: "gzip",
       ext: ".gz",
       deleteOriginFile: false,
-    }),
-    // Brotli compression (better compression)
+    })
+  );
+
+  // Brotli compression (better compression)
+  plugins.push(
     viteCompression({
       algorithm: "brotliCompress",
       ext: ".br",
       deleteOriginFile: false,
-    }),
-  ],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
+    })
+  );
+
+  return {
+    server: {
+      host: "::",
+      port: 8080,
     },
-  },
-  build: {
+    plugins,
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
+    },
+    build: {
     target: "es2020",
     cssCodeSplit: true,
     sourcemap: false,
@@ -102,5 +114,6 @@ export default defineConfig(() => ({
       },
     },
     chunkSizeWarningLimit: 600,
-  },
-}));
+    },
+  };
+});
