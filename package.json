@@ -9,6 +9,7 @@
     "build:analyze": "ANALYZE=true vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "output": "dist",
     "preview": "vite preview"
   },
   "dependencies": {
