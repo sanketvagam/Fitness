@@ -349,13 +349,6 @@ const Index = () => {
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Your Badges</h2>
                   <div className="flex items-center gap-3">
-                    <Button
-                      variant={showLastMonthData ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setShowLastMonthData(!showLastMonthData)}
-                    >
-                      {showLastMonthData ? "Current Month" : "Last Month"}
-                    </Button>
                     <span className="text-sm text-muted-foreground">
                       {unlockedBadges.length} of {allBadges.length} unlocked
                     </span>
@@ -426,13 +419,6 @@ const Index = () => {
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Available Challenges</h2>
                   <div className="flex items-center gap-3">
-                    <Button
-                      variant={showLastMonthData ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setShowLastMonthData(!showLastMonthData)}
-                    >
-                      {showLastMonthData ? "Current Month" : "Last Month"}
-                    </Button>
                     <span className="text-sm text-muted-foreground">
                       {activeChallenges.length} active
                     </span>
@@ -479,13 +465,6 @@ const Index = () => {
                     <p className="text-sm text-muted-foreground">Connect, compete, and share your journey</p>
                   </div>
                 </div>
-                <Button
-                  variant={showLastMonthData ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setShowLastMonthData(!showLastMonthData)}
-                >
-                  {showLastMonthData ? "Current Month" : "Last Month"}
-                </Button>
               </div>
 
               {showLastMonthData ? (
