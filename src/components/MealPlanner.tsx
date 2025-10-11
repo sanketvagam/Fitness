@@ -166,9 +166,7 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
                         {dayData.meals.map((meal, mealIndex) => {
                           const sameTypeMeals = dayData.meals.filter(m => m.type === meal.type);
                           const typeCount = sameTypeMeals.findIndex(m => m.id === meal.id) + 1;
-                          const displayName = sameTypeMeals.length > 1
-                            ? `${meal.type}${typeCount}`
-                            : meal.type;
+                          const displayName = `${meal.type}${typeCount}`;
 
                           return (
                           <TableRow key={meal.id}>
