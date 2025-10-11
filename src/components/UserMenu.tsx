@@ -37,7 +37,7 @@ export const UserMenu = ({ onOpenProfile }: UserMenuProps) => {
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10">
             <AvatarImage src={user?.user_metadata?.avatar_url} alt={displayName} />
-            <AvatarFallback className="bg-primary text-primary-foreground">
+            <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white">
               {getInitials(displayName)}
             </AvatarFallback>
           </Avatar>
