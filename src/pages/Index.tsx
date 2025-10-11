@@ -210,38 +210,6 @@ const Index = () => {
               />
             </div>
 
-            {/* Nutrition Stats */}
-            {calorieData && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
-                <StatCard
-                  title="Calories"
-                  value={`${todayNutrition.calories} / ${calorieData.targetCalories}`}
-                  icon={Flame}
-                  gradient
-                  subtitle="kcal"
-                />
-                <StatCard
-                  title="Protein"
-                  value={`${Math.round(todayNutrition.protein)} / ${calorieData.protein}`}
-                  icon={Utensils}
-                  subtitle="grams"
-                />
-                <StatCard
-                  title="Carbs"
-                  value={`${Math.round(todayNutrition.carbs)} / ${calorieData.carbs}`}
-                  icon={Utensils}
-                  subtitle="grams"
-                />
-                <StatCard
-                  title="Fats"
-                  value={`${Math.round(todayNutrition.fats)} / ${calorieData.fats}`}
-                  icon={Utensils}
-                  subtitle="grams"
-                />
-              </div>
-            )}
-
-            
             {/* BMI & Calorie Section */}
             {userProfile && bmiData && calorieData && (
               <div className="space-y-4">
