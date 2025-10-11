@@ -59,21 +59,6 @@ const activityTypes = [
   }
 ];
 
-                <div className="grid grid-cols-4 gap-2">
-                  {exerciseTypes.map((duration) => (
-                    <Button
-                      key={duration.value}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleExerciseLog(duration)}
-                      className="h-9 flex flex-col gap-0.5 py-1"
-                    >
-                      <Plus className="w-3 h-3" />
-                      <span className="text-xs">{duration.label}</span>
-                    </Button>
-                  ))}
-                </div>
-
 const exerciseTypes = [
   { label: '5 min', value: 5, unit: 'minutes' },
   { label: '10 min', value: 10, unit: 'minutes' },
