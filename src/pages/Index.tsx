@@ -55,7 +55,7 @@ const Index = () => {
   const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [todayCalories, setTodayCalories] = useState(0);
-  const [showDummyData, setShowDummyData] = useState(true);
+  const [showLastMonthData, setShowLastMonthData] = useState(true);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -335,11 +335,11 @@ const Index = () => {
                   <h2 className="text-2xl font-bold">Your Badges</h2>
                   <div className="flex items-center gap-3">
                     <Button
-                      variant={showDummyData ? "default" : "outline"}
+                      variant={showLastMonthData ? "default" : "outline"}
                       size="sm"
-                      onClick={() => setShowDummyData(!showDummyData)}
+                      onClick={() => setShowLastMonthData(!showLastMonthData)}
                     >
-                      {showDummyData ? "Show Real Data" : "Show Dummy Data"}
+                      {showLastMonthData ? "Current Month" : "Last Month"}
                     </Button>
                     <span className="text-sm text-muted-foreground">
                       {unlockedBadges.length} of {allBadges.length} unlocked
@@ -347,7 +347,7 @@ const Index = () => {
                   </div>
                 </div>
 
-                {showDummyData ? (
+                {showLastMonthData ? (
                   <div className="space-y-6">
                     <div>
                       <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
@@ -375,7 +375,7 @@ const Index = () => {
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <Trophy className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                    <h3 className="text-lg font-semibold mb-2">No Real Badge Data</h3>
+                    <h3 className="text-lg font-semibold mb-2">Current Month Badges</h3>
                     <p className="text-sm">Badges are stored locally. Complete goals and activities to unlock badges.</p>
                   </div>
                 )}
@@ -412,18 +412,18 @@ const Index = () => {
                   <h2 className="text-2xl font-bold">Available Challenges</h2>
                   <div className="flex items-center gap-3">
                     <Button
-                      variant={showDummyData ? "default" : "outline"}
+                      variant={showLastMonthData ? "default" : "outline"}
                       size="sm"
-                      onClick={() => setShowDummyData(!showDummyData)}
+                      onClick={() => setShowLastMonthData(!showLastMonthData)}
                     >
-                      {showDummyData ? "Show Real Data" : "Show Dummy Data"}
+                      {showLastMonthData ? "Current Month" : "Last Month"}
                     </Button>
                     <span className="text-sm text-muted-foreground">
                       {activeChallenges.length} active
                     </span>
                   </div>
                 </div>
-                {showDummyData ? (
+                {showLastMonthData ? (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {activeChallenges
                       .filter(c => !joinedChallenges.find(jc => jc.id === c.id))
@@ -439,8 +439,8 @@ const Index = () => {
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <Trophy className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                    <h3 className="text-lg font-semibold mb-2">No Real Challenge Data</h3>
-                    <p className="text-sm">Challenges feature coming soon. Check back later for exciting fitness challenges!</p>
+                    <h3 className="text-lg font-semibold mb-2">Current Month Challenges</h3>
+                    <p className="text-sm">No active challenges this month. New challenges coming soon!</p>
                   </div>
                 )}
               </div>
@@ -465,15 +465,15 @@ const Index = () => {
                   </div>
                 </div>
                 <Button
-                  variant={showDummyData ? "default" : "outline"}
+                  variant={showLastMonthData ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setShowDummyData(!showDummyData)}
+                  onClick={() => setShowLastMonthData(!showLastMonthData)}
                 >
-                  {showDummyData ? "Show Real Data" : "Show Dummy Data"}
+                  {showLastMonthData ? "Current Month" : "Last Month"}
                 </Button>
               </div>
 
-              {showDummyData ? (
+              {showLastMonthData ? (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className="lg:col-span-2">
                     <Leaderboard entries={leaderboard} />
@@ -485,8 +485,8 @@ const Index = () => {
               ) : (
                 <div className="text-center py-12 text-muted-foreground">
                   <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                  <h3 className="text-lg font-semibold mb-2">No Real Leaderboard Data</h3>
-                  <p className="text-sm">Leaderboard feature coming soon. Compete with friends and track your rankings!</p>
+                  <h3 className="text-lg font-semibold mb-2">Current Month Leaderboard</h3>
+                  <p className="text-sm">No leaderboard data for current month yet. Start completing activities to rank up!</p>
                 </div>
               )}
             </motion.div>
