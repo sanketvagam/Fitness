@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { CalorieData } from "@/types/fitness";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
 
 interface MealPlannerProps {
   calorieData?: CalorieData;
@@ -16,6 +17,7 @@ interface MealPlannerProps {
 export function MealPlanner({ calorieData }: MealPlannerProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { meals, getWeeklyNutrition, deleteMeal } = useMealData();
+  const { toast } = useToast();
 
   const today = new Date();
 
@@ -172,7 +174,13 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => deleteMeal(meal.id)}
+                                onClick={() => {
+                                  deleteMeal(meal.id);
+                                  toast({
+                                    title: "Meal deleted",
+                                    description: "The meal has been removed from your log",
+                                  });
+                                }}
                                 className="text-destructive hover:text-destructive"
                               >
                                 <Trash2 className="h-4 w-4" />
