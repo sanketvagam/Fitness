@@ -48,6 +48,13 @@ export const LoginDialog = ({ open, onOpenChange, onSwitchToSignup }: LoginDialo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
+          <div className="flex justify-center mb-4">
+            <img
+              src="/Gemini_Generated_Image_5gheoz5gheoz5ghe.png"
+              alt="HabitBar Logo"
+              className="h-24 w-auto object-contain"
+            />
+          </div>
           <DialogTitle className="text-2xl font-bold text-center">Welcome Back</DialogTitle>
           <DialogDescription className="text-center">
             Sign in to continue your fitness journey

@@ -66,6 +66,13 @@ export const SignupDialog = ({ open, onOpenChange, onSwitchToLogin }: SignupDial
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
+          <div className="flex justify-center mb-4">
+            <img
+              src="/Gemini_Generated_Image_5gheoz5gheoz5ghe.png"
+              alt="HabitBar Logo"
+              className="h-24 w-auto object-contain"
+            />
+          </div>
           <DialogTitle className="text-2xl font-bold text-center">Create Account</DialogTitle>
           <DialogDescription className="text-center">
             Workout Plans and start building lasting habits today
