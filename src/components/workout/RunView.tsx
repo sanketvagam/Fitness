@@ -9,6 +9,7 @@ import { WorkoutSuggestion } from '@/types/workout';
 import { ChevronRight, Pause, Play, X } from 'lucide-react';
 import { useWorkoutPlans } from '@/hooks/useWorkoutPlans';
 import { toast } from 'sonner';
+import { getExerciseGif } from '@/data/exerciseGifs';
 
 interface RunViewProps {
   suggestion: WorkoutSuggestion;
@@ -141,7 +142,20 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-lg">{suggestion.cues[currentCueIndex]}</p>
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-full max-w-md aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center">
+              <img
+                src={getExerciseGif(suggestion.cues[currentCueIndex])}
+                alt={suggestion.cues[currentCueIndex]}
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = 'https://media.tenor.com/Z5uXJMaLXagAAAAM/workout.gif';
+                }}
+              />
+            </div>
+            <p className="text-lg text-center font-medium">{suggestion.cues[currentCueIndex]}</p>
+          </div>
           {currentCueIndex < suggestion.cues.length - 1 && (
             <Button onClick={handleNextCue} variant="outline" className="w-full">
               <ChevronRight className="h-4 w-4 mr-2" />
