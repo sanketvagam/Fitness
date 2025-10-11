@@ -1,4 +1,4 @@
-import foodItems from './Food items.json';
+import foodItems from './food-items.json';
 
 export interface FoodItem {
   Food: string;
