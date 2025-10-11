@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import viteCompression from "vite-plugin-compression";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
@@ -25,23 +24,30 @@ export default defineConfig(async () => {
     }
   }
 
-  // Gzip compression
-  plugins.push(
-    viteCompression({
-      algorithm: "gzip",
-      ext: ".gz",
-      deleteOriginFile: false,
-    })
-  );
+  // Compression plugins - load conditionally
+  try {
+    const viteCompression = (await import("vite-plugin-compression")).default;
 
-  // Brotli compression (better compression)
-  plugins.push(
-    viteCompression({
-      algorithm: "brotliCompress",
-      ext: ".br",
-      deleteOriginFile: false,
-    })
-  );
+    // Gzip compression
+    plugins.push(
+      viteCompression({
+        algorithm: "gzip",
+        ext: ".gz",
+        deleteOriginFile: false,
+      })
+    );
+
+    // Brotli compression (better compression)
+    plugins.push(
+      viteCompression({
+        algorithm: "brotliCompress",
+        ext: ".br",
+        deleteOriginFile: false,
+      })
+    );
+  } catch (e) {
+    console.warn("vite-plugin-compression not available, skipping compression");
+  }
 
   return {
     server: {
