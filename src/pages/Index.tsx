@@ -51,6 +51,7 @@ const Index = () => {
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [bmiData, setBmiData] = useState<BMIData | null>(null);
   const [calorieData, setCalorieData] = useState<CalorieData | null>(null);
+  const [todayCalories, setTodayCalories] = useState(0);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -72,6 +73,11 @@ const Index = () => {
       setCalorieData(calculateCalories(userProfile));
     }
   }, [userProfile]);
+
+  useEffect(() => {
+    const nutrition = getDailyNutrition(new Date());
+    setTodayCalories(nutrition.totalCalories);
+  }, [getDailyNutrition]);
 
   useEffect(() => {
     if (!profileLoading && !userProfile && user) {
@@ -165,7 +171,7 @@ const Index = () => {
               />
               <StatCard
                 title="Calories Today"
-                value={getDailyNutrition(new Date()).totalCalories}
+                value={todayCalories}
                 icon={Utensils}
               />
             </div>
