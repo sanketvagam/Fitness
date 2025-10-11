@@ -163,9 +163,16 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {dayData.meals.map((meal) => (
+                        {dayData.meals.map((meal, mealIndex) => {
+                          const sameTypeMeals = dayData.meals.filter(m => m.type === meal.type);
+                          const typeCount = sameTypeMeals.findIndex(m => m.id === meal.id) + 1;
+                          const displayName = sameTypeMeals.length > 1
+                            ? `${meal.type}${typeCount}`
+                            : meal.type;
+
+                          return (
                           <TableRow key={meal.id}>
-                            <TableCell className="font-medium capitalize">{meal.type}</TableCell>
+                            <TableCell className="font-medium capitalize">{displayName}</TableCell>
                             <TableCell className="text-right">{meal.calories}</TableCell>
                             <TableCell className="text-right">{Math.round(meal.protein)}</TableCell>
                             <TableCell className="text-right">{Math.round(meal.carbs)}</TableCell>
@@ -187,7 +194,8 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
                               </Button>
                             </TableCell>
                           </TableRow>
-                        ))}
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </div>
