@@ -47,26 +47,26 @@ export function MealCard({ meal, onDelete }: MealCardProps) {
               )}
             </div>
 
-            <div className="flex gap-4 text-sm">
+            <div className="flex flex-wrap gap-4 text-sm">
               <div>
-                <span className="text-muted-foreground">Calories: </span>
+                <span className="text-muted-foreground">Calories (kcal/100g): </span>
                 <span className="font-semibold">{meal.calories}</span>
               </div>
               {meal.protein > 0 && (
                 <div>
-                  <span className="text-muted-foreground">P: </span>
+                  <span className="text-muted-foreground">Protein: </span>
                   <span className="font-semibold">{meal.protein}g</span>
                 </div>
               )}
               {meal.carbs > 0 && (
                 <div>
-                  <span className="text-muted-foreground">C: </span>
+                  <span className="text-muted-foreground">Carbs: </span>
                   <span className="font-semibold">{meal.carbs}g</span>
                 </div>
               )}
               {meal.fats > 0 && (
                 <div>
-                  <span className="text-muted-foreground">F: </span>
+                  <span className="text-muted-foreground">Fats: </span>
                   <span className="font-semibold">{meal.fats}g</span>
                 </div>
               )}
