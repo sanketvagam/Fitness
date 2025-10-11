@@ -132,6 +132,23 @@ export const useIntegrations = () => {
         window.location.href = authUrl;
 
         return { success: true, data: { redirecting: true } };
+      } else if (provider === 'google_fit') {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const googleFitClientId = import.meta.env.VITE_GOOGLE_FIT_CLIENT_ID;
+
+        if (!googleFitClientId) {
+          toast.error('Google Fit integration not configured');
+          return { success: false, error: 'Google Fit client ID not configured' };
+        }
+
+        const redirectUri = `${supabaseUrl}/functions/v1/google-fit-oauth-callback`;
+        const scope = 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read https://www.googleapis.com/auth/fitness.location.read';
+
+        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleFitClientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&state=${user.id}&access_type=offline&prompt=consent`;
+
+        window.location.href = authUrl;
+
+        return { success: true, data: { redirecting: true } };
       } else {
         const { data, error } = await supabase
           .from('integrations')
@@ -187,7 +204,7 @@ export const useIntegrations = () => {
     setSyncing(true);
 
     try {
-      if (provider === 'strava') {
+      if (provider === 'strava' || provider === 'google_fit') {
         const { data: { session } } = await supabase.auth.getSession();
 
         if (!session) {
@@ -197,7 +214,10 @@ export const useIntegrations = () => {
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-        const response = await fetch(`${supabaseUrl}/functions/v1/strava-sync-activities`, {
+        const functionName = provider === 'strava' ? 'strava-sync-activities' : 'google-fit-sync-activities';
+        const providerName = provider === 'strava' ? 'Strava' : 'Google Fit';
+
+        const response = await fetch(`${supabaseUrl}/functions/v1/${functionName}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -219,7 +239,7 @@ export const useIntegrations = () => {
         await fetchIntegrations();
         await fetchSyncHistory();
 
-        toast.success(`Synced ${result.activities_synced} activities from Strava!`);
+        toast.success(`Synced ${result.activities_synced} activities from ${providerName}!`);
         return { success: true, activities: result.imported_activities };
       } else {
         const startedAt = new Date().toISOString();

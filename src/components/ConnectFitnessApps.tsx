@@ -63,9 +63,18 @@ export function ConnectFitnessApps({ open, onOpenChange }: ConnectFitnessAppsPro
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const stravaConnected = urlParams.get('strava_connected');
+    const googleFitConnected = urlParams.get('google_fit_connected');
 
     if (stravaConnected === 'true') {
       toast.success('Strava connected successfully! You can now sync your activities.');
+      refetch();
+
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+
+    if (googleFitConnected === 'true') {
+      toast.success('Google Fit connected successfully! You can now sync your activities.');
       refetch();
 
       const newUrl = window.location.pathname;
@@ -76,7 +85,7 @@ export function ConnectFitnessApps({ open, onOpenChange }: ConnectFitnessAppsPro
   const handleConnect = async (appId: string) => {
     setConnectingApp(appId);
     await connectIntegration(appId);
-    if (appId !== 'strava') {
+    if (appId !== 'strava' && appId !== 'google_fit') {
       setConnectingApp(null);
     }
   };
