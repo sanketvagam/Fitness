@@ -66,14 +66,14 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
             <div>
               <p className="text-sm text-muted-foreground">Calories Today</p>
               <p className="text-3xl font-bold">
-                {todayData.totalCalories}
+                {remainingCalories > 0 ? remainingCalories : 0}
                 <span className="text-lg text-muted-foreground">/{targetCalories}</span>
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">Remaining</p>
-              <p className={`text-2xl font-bold ${remainingCalories < 0 ? 'text-destructive' : 'text-green-500'}`}>
-                {remainingCalories > 0 ? remainingCalories : 0} cal
+              <p className="text-sm text-muted-foreground">Consumed</p>
+              <p className="text-2xl font-bold text-muted-foreground">
+                {todayData.totalCalories} cal
               </p>
             </div>
           </div>
