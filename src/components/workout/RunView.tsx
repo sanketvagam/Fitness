@@ -28,6 +28,8 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
   const [notes, setNotes] = useState('');
   const [countdown, setCountdown] = useState(3);
   const [showCountdown, setShowCountdown] = useState(true);
+  const [currentRound, setCurrentRound] = useState(1);
+  const totalRounds = 2;
 
   // Countdown timer on mount
   useEffect(() => {
@@ -69,7 +71,19 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
 
   const handleNextCue = () => {
     if (currentCueIndex < suggestion.cues.length - 1) {
+      // Move to next exercise
       setCurrentCueIndex((prev) => prev + 1);
+    } else {
+      // Last exercise in current round
+      if (currentRound < totalRounds) {
+        // Start next round
+        setCurrentRound((prev) => prev + 1);
+        setCurrentCueIndex(0);
+        toast.success(`Round ${currentRound} complete! Starting Round ${currentRound + 1}`);
+      } else {
+        // All rounds complete, finish workout
+        setShowFinishDialog(true);
+      }
     }
   };
 
@@ -165,9 +179,14 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Current Cue</CardTitle>
-            <span className="text-sm text-muted-foreground">
-              {currentCueIndex + 1} / {suggestion.cues.length}
-            </span>
+            <div className="flex flex-col items-end gap-1">
+              <span className="text-sm text-muted-foreground">
+                Exercise {currentCueIndex + 1} / {suggestion.cues.length}
+              </span>
+              <span className="text-xs text-muted-foreground font-semibold">
+                Round {currentRound} / {totalRounds}
+              </span>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -185,12 +204,14 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
             </div>
             <p className="text-lg text-center font-medium">{suggestion.cues[currentCueIndex]}</p>
           </div>
-          {currentCueIndex < suggestion.cues.length - 1 && (
-            <Button onClick={handleNextCue} variant="outline" className="w-full">
-              <ChevronRight className="h-4 w-4 mr-2" />
-              Next Cue
-            </Button>
-          )}
+          <Button onClick={handleNextCue} variant="outline" className="w-full">
+            <ChevronRight className="h-4 w-4 mr-2" />
+            {currentCueIndex === suggestion.cues.length - 1 && currentRound === totalRounds
+              ? 'Finish Workout'
+              : currentCueIndex === suggestion.cues.length - 1
+              ? `Next Round (${currentRound + 1}/${totalRounds})`
+              : 'Next Exercise'}
+          </Button>
         </CardContent>
       </Card>
 
