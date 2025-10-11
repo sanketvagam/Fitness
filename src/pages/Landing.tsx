@@ -71,7 +71,7 @@ const Landing = () => {
                 <Target className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                FitForge
+                HabitBar
               </h1>
             </div>
             <div className="flex items-center gap-2">
@@ -95,7 +95,7 @@ const Landing = () => {
               className="text-center max-w-4xl mx-auto"
             >
               <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-                Forge Your Fitness Future
+                Raise the bar, never skip the habit
               </h2>
               <p className="text-xl md:text-2xl text-muted-foreground mb-8">
                 Transform your body, mind, and lifestyle with intelligent tracking, gamification, and
@@ -165,7 +165,7 @@ const Landing = () => {
             >
               <h3 className="text-3xl md:text-4xl font-bold mb-6">Ready to Get Started?</h3>
               <p className="text-lg text-muted-foreground mb-8">
-                Join thousands of users who are transforming their lives with FitForge
+                Join thousands of users who are transforming their lives with HabitBar
               </p>
               <Button size="lg" onClick={() => setSignupOpen(true)} className="text-lg px-8">
                 Create Free Account
@@ -178,7 +178,7 @@ const Landing = () => {
       <footer className="border-t border-border/50 py-8">
         <div className="container mx-auto px-4">
           <div className="text-center text-muted-foreground">
-            <p>&copy; 2025 FitForge. All rights reserved.</p>
+            <p>&copy; 2025 HabitBar. All rights reserved.</p>
           </div>
         </div>
       </footer>

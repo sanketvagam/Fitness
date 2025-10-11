@@ -110,8 +110,8 @@ function calculateLevel(xp: number): UserLevel {
 }
 
 export function useAchievements() {
-  const [achievements, setAchievements] = useLocalStorage<Achievement[]>('fitforge-achievements', []);
-  const [xp, setXp] = useLocalStorage<number>('fitforge-xp', 0);
+  const [achievements, setAchievements] = useLocalStorage<Achievement[]>('habitbar-achievements', []);
+  const [xp, setXp] = useLocalStorage<number>('habitbar-xp', 0);
 
   const unlockedBadges = BADGES.filter(badge =>
     achievements.some(a => a.badgeId === badge.id)

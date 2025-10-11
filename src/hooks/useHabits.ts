@@ -10,7 +10,7 @@ const DEFAULT_HABITS: Omit<Habit, 'id' | 'streak' | 'completedDates'>[] = [
 ];
 
 export function useHabits() {
-  const [habits, setHabits] = useLocalStorage<Habit[]>('fitforge-habits', 
+  const [habits, setHabits] = useLocalStorage<Habit[]>('habitbar-habits', 
     DEFAULT_HABITS.map(h => ({
       ...h,
       id: crypto.randomUUID(),

@@ -3,7 +3,7 @@ import { Meal, DailyNutrition } from '@/types/fitness';
 import { startOfDay, format } from 'date-fns';
 
 export function useMealData() {
-  const [meals, setMeals] = useLocalStorage<Meal[]>('fitforge-meals', []);
+  const [meals, setMeals] = useLocalStorage<Meal[]>('habitbar-meals', []);
 
   const addMeal = (meal: Omit<Meal, 'id'>) => {
     const newMeal: Meal = {

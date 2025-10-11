@@ -2,8 +2,8 @@ import { useLocalStorage } from './useLocalStorage';
 import { FitnessGoal, Activity, DashboardStats } from '@/types/fitness';
 
 export function useFitnessData() {
-  const [goals, setGoals] = useLocalStorage<FitnessGoal[]>('fitforge-goals', []);
-  const [activities, setActivities] = useLocalStorage<Activity[]>('fitforge-activities', []);
+  const [goals, setGoals] = useLocalStorage<FitnessGoal[]>('habitbar-goals', []);
+  const [activities, setActivities] = useLocalStorage<Activity[]>('habitbar-activities', []);
 
   const addGoal = (goal: Omit<FitnessGoal, 'id' | 'createdAt'>) => {
     const newGoal: FitnessGoal = {

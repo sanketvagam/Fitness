@@ -3,7 +3,7 @@ import { WeightEntry } from '@/types/fitness';
 import { format, startOfDay } from 'date-fns';
 
 export function useWeightData() {
-  const [weights, setWeights] = useLocalStorage<WeightEntry[]>('fitforge-weights', []);
+  const [weights, setWeights] = useLocalStorage<WeightEntry[]>('habitbar-weights', []);
 
   const addWeight = (weight: number, date: Date = new Date()) => {
     const newEntry: WeightEntry = {
