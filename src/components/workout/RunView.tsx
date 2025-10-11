@@ -191,18 +191,19 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col items-center space-y-4">
-            <div className="w-full max-w-md aspect-square bg-muted rounded-lg overflow-hidden flex items-center justify-center">
-              <img
-                src={getExerciseGif(suggestion.cues[currentCueIndex])}
-                alt={suggestion.cues[currentCueIndex]}
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = 'https://media.tenor.com/Z5uXJMaLXagAAAAM/workout.gif';
-                }}
-              />
+            <div className="w-full max-w-md aspect-square bg-gradient-to-br from-primary/10 via-primary/5 to-background rounded-lg overflow-hidden flex items-center justify-center border-2 border-primary/20">
+              <div className="text-center p-8 space-y-4">
+                <div className="text-6xl font-bold text-primary animate-pulse">
+                  {currentCueIndex + 1}
+                </div>
+                <p className="text-2xl font-semibold text-foreground">
+                  {suggestion.cues[currentCueIndex]}
+                </p>
+                <div className="text-sm text-muted-foreground mt-4">
+                  Focus on form and breathing
+                </div>
+              </div>
             </div>
-            <p className="text-lg text-center font-medium">{suggestion.cues[currentCueIndex]}</p>
           </div>
           <Button onClick={handleNextCue} variant="outline" className="w-full">
             <ChevronRight className="h-4 w-4 mr-2" />
