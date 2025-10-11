@@ -134,9 +134,8 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="activities">Activities</TabsTrigger>
             <TabsTrigger value="meals">Meals</TabsTrigger>
             <TabsTrigger value="habits">Habits</TabsTrigger>
             <TabsTrigger value="goals">Goals</TabsTrigger>
@@ -267,69 +266,6 @@ const Index = () => {
             )}
           </TabsContent>
 
-          {/* Activities Tab */}
-          <TabsContent value="activities" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-1">
-                <QuickActivityWidget
-                  onLogActivity={async (activity) => {
-                    let matchingGoal = goals.find(
-                      (g) =>
-                        (activity.type === 'exercise' && g.type === 'gym-frequency') ||
-                        (activity.type === 'running' && g.type === 'run-distance') ||
-                        (activity.type === 'swimming' && g.type === 'gym-frequency') ||
-                        (activity.type === 'steps' && g.type === 'daily-steps') ||
-                        (activity.type === 'weight' && g.type === 'weight-loss')
-                    );
-
-                    if (!matchingGoal) {
-                      const goalDefaults: Record<string, { type: GoalType; title: string; target: number; unit: string; category: string }> = {
-                        exercise: { type: 'gym-frequency', title: 'Workout Frequency', target: 50, unit: 'sessions', category: 'fitness' },
-                        running: { type: 'run-distance', title: 'Running Distance', target: 100, unit: 'km', category: 'cardio' },
-                        swimming: { type: 'gym-frequency', title: 'Swimming Sessions', target: 30, unit: 'laps', category: 'cardio' },
-                        steps: { type: 'daily-steps', title: 'Daily Steps', target: 300000, unit: 'steps', category: 'activity' },
-                      };
-
-                      const defaultGoal = goalDefaults[activity.type];
-                      if (defaultGoal) {
-                        const endDate = new Date();
-                        endDate.setMonth(endDate.getMonth() + 1);
-                        await addGoal({
-                          ...defaultGoal,
-                          current: 0,
-                          deadline: endDate.toISOString().split('T')[0],
-                        });
-                        await refetchGoals();
-                        matchingGoal = goals.find(
-                          (g) =>
-                            (activity.type === 'exercise' && g.type === 'gym-frequency') ||
-                            (activity.type === 'running' && g.type === 'run-distance') ||
-                            (activity.type === 'swimming' && g.type === 'gym-frequency') ||
-                            (activity.type === 'steps' && g.type === 'daily-steps')
-                        );
-                      }
-                    }
-
-                    if (matchingGoal) {
-                      await addActivity({
-                        goalId: matchingGoal.id,
-                        type: activity.type,
-                        value: activity.value,
-                        notes: activity.unit ? `${activity.value} ${activity.unit}` : undefined,
-                      });
-                      refetchActivities();
-                      refetchGoals();
-                    }
-                  }}
-                />
-              </div>
-              <div className="lg:col-span-2">
-                <ActivityFeed activities={activities} />
-              </div>
-            </div>
-
-            <ActivityAnalytics activities={activities} />
-          </TabsContent>
 
           {/* Meals Tab */}
           <TabsContent value="meals">
