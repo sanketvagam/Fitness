@@ -66,6 +66,7 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleQuickLog = (type: typeof activityTypes[0], quickValue: number) => {
+    console.log(type);
     onLogActivity({
       type: type.type,
       value: quickValue,
