@@ -138,19 +138,6 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
               exit={{ opacity: 0, height: 0 }}
               className="space-y-3"
             >
-              <div className="border-b pb-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
-                    <Activity className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="font-medium text-sm">Personal Workout Plans</span>
-                  <Badge variant="outline" className="ml-auto text-xs">
-                    Priority
-                  </Badge>
-                </div>
-
-              </div>
-
               {activityTypes.map((type) => {
                 const Icon = type.icon;
                 return (
