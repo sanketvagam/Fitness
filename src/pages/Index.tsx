@@ -7,6 +7,7 @@ import { useActivities } from "@/hooks/useActivities";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useChallenges } from "@/hooks/useChallenges";
 import { useLeaderboard } from "@/hooks/useLeaderboard";
+import { useMealData } from "@/hooks/useMealData";
 import { StatCard } from "@/components/StatCard";
 import { GoalCard } from "@/components/GoalCard";
 import { CreateGoalDialog } from "@/components/CreateGoalDialog";
@@ -27,7 +28,7 @@ import { UserMenu } from "@/components/UserMenu";
 import { QuickActivityWidget } from "@/components/QuickActivityWidget";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { ActivityAnalytics } from "@/components/ActivityAnalytics";
-import { Target, TrendingUp, Award, Flame, Trophy, Users } from "lucide-react";
+import { Target, TrendingUp, Award, Flame, Trophy, Users, Utensils } from "lucide-react";
 import { UserProfile, BMIData, CalorieData, GoalType } from "@/types/fitness";
 import { calculateBMI, calculateCalories } from "@/utils/calculations";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ const Index = () => {
   const { allBadges, unlockedBadges, lockedBadges, userLevel, checkAndUnlock } = useAchievements();
   const { activeChallenges, joinedChallenges, userChallenges, joinChallenge, leaveChallenge } = useChallenges();
   const { leaderboard } = useLeaderboard();
+  const { getDailyNutrition } = useMealData();
   const [activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState<string>("");
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
@@ -138,7 +140,7 @@ const Index = () => {
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-8">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
               <StatCard
                 title="Total Goals"
                 value={stats.totalGoals}
@@ -160,6 +162,11 @@ const Index = () => {
                 value={`${stats.currentStreak} days`}
                 icon={Flame}
                 gradient
+              />
+              <StatCard
+                title="Calories Today"
+                value={getDailyNutrition(new Date()).totalCalories}
+                icon={Utensils}
               />
             </div>
 
