@@ -6,15 +6,13 @@ interface StatCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
-  gradient?: boolean;
   className?: string;
 }
 
-export function StatCard({ title, value, icon: Icon, gradient, className }: StatCardProps) {
+export function StatCard({ title, value, icon: Icon, className }: StatCardProps) {
   return (
     <Card className={cn(
       "p-6 border-border/50 backdrop-blur-sm transition-all hover:scale-105",
-      gradient && "bg-gradient-to-br from-primary/10 to-secondary/10",
       className
     )}>
       <div className="flex items-center justify-between">

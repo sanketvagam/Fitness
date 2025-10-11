@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 
-type ThemeMode = 'dark' | 'light' | 'gradient';
+type ThemeMode = 'dark' | 'light';
 
 interface ThemeContextType {
   theme: ThemeMode;
@@ -20,9 +20,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!mounted) return;
-    
+
     const root = document.documentElement;
-    root.classList.remove('dark', 'light', 'gradient');
+    root.classList.remove('dark', 'light');
     root.classList.add(theme);
   }, [theme, mounted]);
 

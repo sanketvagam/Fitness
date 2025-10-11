@@ -104,11 +104,11 @@ const Index = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <Target className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+                <Target className="w-6 h-6 text-primary-foreground" />
               </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold">
                 FitForge
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -411,7 +411,7 @@ const Index = () => {
               className="space-y-6"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <div>
