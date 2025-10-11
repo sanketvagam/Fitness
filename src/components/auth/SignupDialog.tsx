@@ -10,9 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Loader2, Mail, Lock, User, Github } from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc';
+import { Loader2, Mail, Lock, User } from 'lucide-react';
 
 interface SignupDialogProps {
   open: boolean;
@@ -21,7 +19,7 @@ interface SignupDialogProps {
 }
 
 export const SignupDialog = ({ open, onOpenChange, onSwitchToLogin }: SignupDialogProps) => {
-  const { signUp, signInWithGoogle, signInWithGithub } = useAuth();
+  const { signUp } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,17 +56,6 @@ export const SignupDialog = ({ open, onOpenChange, onSwitchToLogin }: SignupDial
     setLoading(false);
   };
 
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    await signInWithGoogle();
-    setLoading(false);
-  };
-
-  const handleGithubSignIn = async () => {
-    setLoading(true);
-    await signInWithGithub();
-    setLoading(false);
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -81,39 +68,6 @@ export const SignupDialog = ({ open, onOpenChange, onSwitchToLogin }: SignupDial
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div className="space-y-3">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleGoogleSignIn}
-              disabled={loading}
-            >
-              <FcGoogle className="mr-2 h-5 w-5" />
-              Continue with Google
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleGithubSignIn}
-              disabled={loading}
-            >
-              <Github className="mr-2 h-5 w-5" />
-              Continue with GitHub
-            </Button>
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-            </div>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">

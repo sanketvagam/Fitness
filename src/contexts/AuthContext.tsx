@@ -9,8 +9,6 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, name: string) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signInWithGoogle: () => Promise<{ error: AuthError | null }>;
-  signInWithGithub: () => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -133,65 +131,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const signInWithGoogle = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        },
-      });
-
-      if (error) {
-        toast({
-          variant: 'destructive',
-          title: 'Google sign in failed',
-          description: error.message,
-        });
-        return { error };
-      }
-
-      return { error: null };
-    } catch (error) {
-      const authError = error as AuthError;
-      toast({
-        variant: 'destructive',
-        title: 'Google sign in failed',
-        description: authError.message,
-      });
-      return { error: authError };
-    }
-  };
-
-  const signInWithGithub = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        },
-      });
-
-      if (error) {
-        toast({
-          variant: 'destructive',
-          title: 'GitHub sign in failed',
-          description: error.message,
-        });
-        return { error };
-      }
-
-      return { error: null };
-    } catch (error) {
-      const authError = error as AuthError;
-      toast({
-        variant: 'destructive',
-        title: 'GitHub sign in failed',
-        description: authError.message,
-      });
-      return { error: authError };
-    }
-  };
 
   const signOut = async () => {
     try {
@@ -214,8 +153,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     loading,
     signUp,
     signIn,
-    signInWithGoogle,
-    signInWithGithub,
     signOut,
   };
 
