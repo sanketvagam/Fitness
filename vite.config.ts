@@ -68,14 +68,11 @@ export default defineConfig(() => ({
             "@radix-ui/react-select",
           ],
           "ui-radix-2": [
-            "@radix-ui/react-accordion",
             "@radix-ui/react-tabs",
             "@radix-ui/react-slider",
-            "@radix-ui/react-switch",
-            "@radix-ui/react-checkbox",
+            "@radix-ui/react-toggle",
           ],
           "ui-radix-3": [
-            "@radix-ui/react-alert-dialog",
             "@radix-ui/react-toast",
             "@radix-ui/react-progress",
             "@radix-ui/react-scroll-area",
