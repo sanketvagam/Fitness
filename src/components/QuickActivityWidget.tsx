@@ -56,7 +56,7 @@ const activityTypes = [
     unit: 'kg',
     color: 'from-red-500 to-pink-500',
     quickValues: [0.5, 1, 2],
-  },
+  }
 
 ];
 
