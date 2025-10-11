@@ -76,6 +76,9 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
   };
 
   const handleExerciseLog = (duration: { label: string; value: number; unit: string }) => {
+
+    console.log(duration.value);
+    console.log(duration.unit);
     onLogActivity({
       type: 'exercise',
       value: duration.value,
