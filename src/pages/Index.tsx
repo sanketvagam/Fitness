@@ -213,20 +213,7 @@ const Index = () => {
             {/* BMI & Calorie Section */}
             {userProfile && bmiData && calorieData && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold">Your Health Metrics</h2>
-                  <WorkoutPlansDialog />
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
-                  <BMICard bmiData={bmiData} />
-                  <CalorieCard calorieData={calorieData} onClick={() => setActiveTab("meals")} />
-                </div>
-              </div>
-            )}
-
-            {/* Quick Activity Widget */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-1">
+<div className="lg:col-span-1">
                 <QuickActivityWidget
                   onLogActivity={async (activity) => {
                     let matchingGoal = goals.find(
@@ -279,9 +266,28 @@ const Index = () => {
                   }}
                 />
               </div>
+
+                
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Your Health Metrics</h2>
+                  <WorkoutPlansDialog />
+                </div>
+
+              </div>
+            )}
+
+            {/* Quick Activity Widget */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
               <div className="lg:col-span-2">
                 <ActivityFeed activities={getRecentActivities(5)} limit={5} />
               </div>
+
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
+                  <BMICard bmiData={bmiData} />
+                  <CalorieCard calorieData={calorieData} onClick={() => setActiveTab("meals")} />
+                </div>
+              
             </div>
 
           </TabsContent>
