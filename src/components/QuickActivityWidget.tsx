@@ -18,6 +18,14 @@ interface QuickActivityWidgetProps {
 
 const activityTypes = [
   {
+    type: 'exercise' as const,
+    icon: Zap,
+    label: 'exercise',
+    unit: 'min',
+    color: 'from-red-500 to-pink-500',
+    quickValues: [5, 10, 15],
+  },
+  {
     type: 'steps' as const,
     icon: Footprints,
     label: 'Steps',
@@ -49,14 +57,7 @@ const activityTypes = [
     color: 'from-red-500 to-pink-500',
     quickValues: [0.5, 1, 2],
   },
-  {
-    type: 'exercise' as const,
-    icon: Zap,
-    label: 'exercise',
-    unit: 'min',
-    color: 'from-red-500 to-pink-500',
-    quickValues: [5, 10, 15],
-  }
+
 ];
 
 export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps) {
