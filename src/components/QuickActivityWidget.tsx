@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -67,9 +67,15 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
   const [value, setValue] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const { sessions, getWeeklyAQM, loading } = useWorkoutPlans();
+  const { sessions, getWeeklyAQM, loading, refresh } = useWorkoutPlans();
 
   const weeklyAQM = getWeeklyAQM();
+
+  useEffect(() => {
+    if (showHistory) {
+      refresh();
+    }
+  }, [showHistory]);
 
   const handleQuickLog = (type: typeof activityTypes[0], quickValue: number) => {
     console.log(type.type);
