@@ -40,8 +40,12 @@ export function useWorkoutPlans() {
   };
 
   const loadSessions = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('loadSessions: No user found');
+      return;
+    }
 
+    console.log('loadSessions: Loading sessions for user', user.id);
     const { data, error } = await supabase
       .from('workout_sessions')
       .select('*, micro_plans(*)')
@@ -49,7 +53,10 @@ export function useWorkoutPlans() {
       .order('completed_at', { ascending: false })
       .limit(30);
 
-    if (!error && data) {
+    if (error) {
+      console.error('loadSessions error:', error);
+    } else {
+      console.log('loadSessions: Loaded', data?.length, 'sessions', data);
       setSessions(data as WorkoutSession[]);
     }
   };

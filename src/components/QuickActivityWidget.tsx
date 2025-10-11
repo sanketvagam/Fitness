@@ -73,9 +73,14 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
 
   useEffect(() => {
     if (showHistory) {
+      console.log('Refreshing workout history...');
       refresh();
     }
   }, [showHistory]);
+
+  useEffect(() => {
+    console.log('Sessions updated:', sessions.length, sessions);
+  }, [sessions]);
 
   const handleQuickLog = (type: typeof activityTypes[0], quickValue: number) => {
     console.log(type.type);
