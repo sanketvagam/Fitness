@@ -28,6 +28,7 @@ import { UserMenu } from "@/components/UserMenu";
 import { QuickActivityWidget } from "@/components/QuickActivityWidget";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { ActivityAnalytics } from "@/components/ActivityAnalytics";
+import { PersonalWorkoutPlans } from "@/components/workout/PersonalWorkoutPlans";
 import { Target, TrendingUp, Award, Flame, Trophy, Users, Utensils } from "lucide-react";
 import { UserProfile, BMIData, CalorieData, GoalType } from "@/types/fitness";
 import { calculateBMI, calculateCalories } from "@/utils/calculations";
@@ -134,8 +135,9 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="workouts">Workouts</TabsTrigger>
             <TabsTrigger value="meals">Meals</TabsTrigger>
             <TabsTrigger value="habits">Habits</TabsTrigger>
             <TabsTrigger value="goals">Goals</TabsTrigger>
@@ -266,6 +268,11 @@ const Index = () => {
             )}
           </TabsContent>
 
+
+          {/* Workouts Tab */}
+          <TabsContent value="workouts">
+            <PersonalWorkoutPlans />
+          </TabsContent>
 
           {/* Meals Tab */}
           <TabsContent value="meals">
