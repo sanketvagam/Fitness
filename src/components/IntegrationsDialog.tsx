@@ -16,7 +16,7 @@ interface IntegrationsDialogProps {
 }
 
 export function IntegrationsDialog({ open, onOpenChange }: IntegrationsDialogProps) {
-  const [connections, setConnections] = useLocalStorage<ConnectedIntegration[]>("fitforge-integrations", []);
+  const [connections, setConnections] = useLocalStorage<ConnectedIntegration[]>("habitbar-integrations", []);
   const [showInfo, setShowInfo] = useState(true);
 
   const handleConnect = (id: string) => {
@@ -67,7 +67,7 @@ export function IntegrationsDialog({ open, onOpenChange }: IntegrationsDialogPro
                     To enable real syncing, you'll need:
                   </p>
                   <ul className="text-xs text-muted-foreground mt-2 space-y-1 ml-4 list-disc">
-                    <li>Backend server for OAuth flows (Lovable Cloud recommended)</li>
+                    <li>Backend server for OAuth flows</li>
                     <li>API credentials from each service (Fitbit, Strava, etc.)</li>
                     <li>Webhook endpoints for data synchronization</li>
                   </ul>
@@ -151,14 +151,6 @@ export function IntegrationsDialog({ open, onOpenChange }: IntegrationsDialogPro
             <li>• <strong>Privacy:</strong> You control what data is shared</li>
             <li>• <strong>Real-time:</strong> Updates reflect within minutes of activity</li>
           </ul>
-          <Button
-            variant="link"
-            className="mt-3 p-0 h-auto text-primary"
-            onClick={() => window.open("https://docs.lovable.dev/features/cloud", "_blank")}
-          >
-            Learn about Lovable Cloud for backend
-            <ExternalLink className="w-3 h-3 ml-1" />
-          </Button>
         </div>
       </DialogContent>
     </Dialog>

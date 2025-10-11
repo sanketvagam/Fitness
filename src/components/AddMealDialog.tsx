@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { useMealData } from "@/hooks/useMealData";
+import { useMealTemplates } from "@/hooks/useMealTemplates";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { foodDatabase, parseNutrients, FoodItem } from "@/data/foodDatabase";
@@ -14,6 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ChevronDown, Sparkles } from "lucide-react";
 
 interface AddMealDialogProps {
   open: boolean;
@@ -22,8 +25,9 @@ interface AddMealDialogProps {
 
 export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
   const { addMeal } = useMealData();
+  const { searchTemplates, saveTemplate } = useMealTemplates();
   const { toast } = useToast();
-  
+
   const [formData, setFormData] = useState({
     type: "breakfast" as "breakfast" | "lunch" | "dinner" | "snack",
     notes: "",
@@ -60,6 +64,41 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
     e.preventDefault();
 
     if (selectedItems.length === 0) {
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (formData.name.trim().length > 0) {
+      const results = searchTemplates(formData.name, formData.type);
+      setSuggestions(results);
+      setShowSuggestions(results.length > 0);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, [formData.name, formData.type]);
+
+  const handleSelectTemplate = (template: any) => {
+    setFormData({
+      ...formData,
+      name: template.name,
+      calories: template.calories.toString(),
+      protein: template.protein.toString(),
+      carbs: template.carbs.toString(),
+      fats: template.fats.toString(),
+    });
+    setShowSuggestions(false);
+    toast({
+      title: "Template loaded",
+      description: `Nutritional values filled from previous entry`,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.name || !formData.calories) {
       toast({
         title: "No items selected",
         description: "Please select at least one meal item",
@@ -73,6 +112,8 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
 
     addMeal({
       name: mealName,
+    const mealData = {
+      name: formData.name,
       type: formData.type,
       calories: totals.calories,
       protein: totals.protein,
@@ -80,6 +121,18 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
       fats: totals.fats,
       date: format(new Date(), 'yyyy-MM-dd'),
       notes: formData.notes,
+    };
+
+    addMeal(mealData);
+
+    await saveTemplate({
+      name: formData.name,
+      calories: mealData.calories,
+      protein: mealData.protein,
+      carbs: mealData.carbs,
+      fats: mealData.fats,
+      meal_type: formData.type,
+      usage_count: 1,
     });
 
     toast({
@@ -195,6 +248,8 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
             </div>
           )}
 
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="type">Meal Type</Label>
             <Select
@@ -213,6 +268,111 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
             </Select>
           </div>
 
+          <div className="relative">
+            <Label htmlFor="name">Meal Name</Label>
+            <div className="relative">
+              <Input
+                ref={inputRef}
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onFocus={() => {
+                  if (suggestions.length > 0) {
+                    setShowSuggestions(true);
+                  }
+                }}
+                placeholder="e.g., Grilled Chicken Salad"
+              />
+              {suggestions.length > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3"
+                  onClick={() => setShowSuggestions(!showSuggestions)}
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-lg">
+                <Command>
+                  <CommandList>
+                    <CommandEmpty>No suggestions found</CommandEmpty>
+                    <CommandGroup heading={
+                      <div className="flex items-center gap-1 text-xs">
+                        <Sparkles className="h-3 w-3" />
+                        Previous meals
+                      </div>
+                    }>
+                      {suggestions.map((template) => (
+                        <CommandItem
+                          key={template.id}
+                          onSelect={() => handleSelectTemplate(template)}
+                          className="cursor-pointer"
+                        >
+                          <div className="flex flex-col w-full">
+                            <div className="font-medium">{template.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {template.calories} cal • {template.protein}g protein • {template.carbs}g carbs • {template.fats}g fats
+                            </div>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="calories">Calories *</Label>
+              <Input
+                id="calories"
+                type="number"
+                value={formData.calories}
+                onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
+                placeholder="500"
+              />
+            </div>
+            <div>
+              <Label htmlFor="protein">Protein (g)</Label>
+              <Input
+                id="protein"
+                type="number"
+                value={formData.protein}
+                onChange={(e) => setFormData({ ...formData, protein: e.target.value })}
+                placeholder="30"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="carbs">Carbs (g)</Label>
+              <Input
+                id="carbs"
+                type="number"
+                value={formData.carbs}
+                onChange={(e) => setFormData({ ...formData, carbs: e.target.value })}
+                placeholder="40"
+              />
+            </div>
+            <div>
+              <Label htmlFor="fats">Fats (g)</Label>
+              <Input
+                id="fats"
+                type="number"
+                value={formData.fats}
+                onChange={(e) => setFormData({ ...formData, fats: e.target.value })}
+                placeholder="15"
+              />
+            </div>
+          </div>
 
           <div>
             <Label htmlFor="notes">Notes (optional)</Label>
