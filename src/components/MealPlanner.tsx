@@ -15,7 +15,7 @@ interface MealPlannerProps {
 
 export function MealPlanner({ calorieData }: MealPlannerProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { getWeeklyNutrition, deleteMeal } = useMealData();
+  const { meals, getWeeklyNutrition, deleteMeal } = useMealData();
 
   const today = new Date();
   const weeklyData = getWeeklyNutrition();
