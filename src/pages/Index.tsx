@@ -16,7 +16,6 @@ import { BMICard } from "@/components/BMICard";
 import { CalorieCard } from "@/components/CalorieCard";
 import { WorkoutPlansDialog } from "@/components/WorkoutPlansDialog";
 import { ConnectFitnessApps } from "@/components/ConnectFitnessApps";
-import { ProgressDashboard } from "@/components/ProgressDashboard";
 import { MealPlanner } from "@/components/MealPlanner";
 import { BadgeCard } from "@/components/BadgeCard";
 import { LevelProgress } from "@/components/LevelProgress";
@@ -135,10 +134,9 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="activities">Activities</TabsTrigger>
-            <TabsTrigger value="progress">Progress</TabsTrigger>
             <TabsTrigger value="meals">Meals</TabsTrigger>
             <TabsTrigger value="habits">Habits</TabsTrigger>
             <TabsTrigger value="goals">Goals</TabsTrigger>
@@ -312,11 +310,6 @@ const Index = () => {
             </div>
 
             <ActivityAnalytics activities={activities} />
-          </TabsContent>
-
-          {/* Progress Tab */}
-          <TabsContent value="progress">
-            <ProgressDashboard />
           </TabsContent>
 
           {/* Meals Tab */}
