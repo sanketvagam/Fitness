@@ -86,10 +86,10 @@ export function ChallengeCard({ challenge, userChallenge, onJoin, onLeave }: Cha
             </Button>
           ) : (
             <Button
-              onClick={() => onJoin(challenge.id)}
+              disabled
               className="w-full"
             >
-              Join Challenge
+              Coming Soon
             </Button>
           )}
         </div>

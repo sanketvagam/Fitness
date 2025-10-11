@@ -13,7 +13,7 @@ const CHALLENGES: Challenge[] = [
     endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     participants: 1247,
     category: 'calories',
-    isActive: true,
+    isActive: false,
   },
   {
     id: 'step-master',
@@ -26,7 +26,7 @@ const CHALLENGES: Challenge[] = [
     endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     participants: 3421,
     category: 'steps',
-    isActive: true,
+    isActive: false,
   },
   {
     id: 'workout-week',
@@ -39,7 +39,7 @@ const CHALLENGES: Challenge[] = [
     endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     participants: 892,
     category: 'workouts',
-    isActive: true,
+    isActive: false,
   },
   {
     id: 'distance-demon',
@@ -52,7 +52,7 @@ const CHALLENGES: Challenge[] = [
     endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
     participants: 567,
     category: 'distance',
-    isActive: true,
+    isActive: false,
   },
 ];
 
@@ -83,7 +83,7 @@ export function useChallenges() {
     );
   };
 
-  const activeChallenges = CHALLENGES.filter(c => c.isActive);
+  const activeChallenges = CHALLENGES;
   const joinedChallenges = activeChallenges.filter(c =>
     userChallenges.some(uc => uc.challengeId === c.id)
   );
