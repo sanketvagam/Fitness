@@ -18,6 +18,14 @@ interface QuickActivityWidgetProps {
 
 const activityTypes = [
   {
+    type: 'steps' as const,
+    icon: Footprints,
+    label: 'Steps',
+    unit: 'steps',
+    color: 'from-orange-500 to-yellow-500',
+    quickValues: [5000, 10000, 15000],
+  },
+  {
     type: 'running' as const,
     icon: Activity,
     label: 'Running',
@@ -32,14 +40,6 @@ const activityTypes = [
     unit: 'laps',
     color: 'from-teal-500 to-emerald-500',
     quickValues: [10, 20, 30],
-  },
-  {
-    type: 'steps' as const,
-    icon: Footprints,
-    label: 'Steps',
-    unit: 'steps',
-    color: 'from-orange-500 to-yellow-500',
-    quickValues: [5000, 10000, 15000],
   },
   {
     type: 'weight' as const,
@@ -131,6 +131,32 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
               exit={{ opacity: 0, height: 0 }}
               className="space-y-3"
             >
+              <div className="border-b pb-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+                    <Activity className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-medium text-sm">Personalized Exercise</span>
+                  <Badge variant="outline" className="ml-auto text-xs">
+                    Priority
+                  </Badge>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {exerciseTypes.map((duration) => (
+                    <Button
+                      key={duration.value}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleExerciseLog(duration)}
+                      className="h-9 flex flex-col gap-0.5 py-1"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span className="text-xs">{duration.label}</span>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
               {activityTypes.map((type) => {
                 const Icon = type.icon;
                 return (
@@ -166,29 +192,6 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
                   </div>
                 );
               })}
-
-              <div className="pt-2 border-t">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
-                    <Activity className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="font-medium text-sm">Personalized Exercise</span>
-                </div>
-                <div className="grid grid-cols-4 gap-2">
-                  {exerciseTypes.map((duration) => (
-                    <Button
-                      key={duration.value}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleExerciseLog(duration)}
-                      className="h-9 flex flex-col gap-0.5 py-1"
-                    >
-                      <Plus className="w-3 h-3" />
-                      <span className="text-xs">{duration.label}</span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
             </motion.div>
           ) : (
             <motion.div

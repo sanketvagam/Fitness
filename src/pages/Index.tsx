@@ -196,7 +196,6 @@ const Index = () => {
                         goalId: matchingGoal.id,
                         type: activity.type,
                         value: activity.value,
-                        date: new Date().toISOString().split('T')[0],
                         notes: activity.unit ? `${activity.value} ${activity.unit}` : undefined,
                       });
                       refetchActivities();
@@ -247,7 +246,6 @@ const Index = () => {
                         goalId: matchingGoal.id,
                         type: activity.type,
                         value: activity.value,
-                        date: new Date().toISOString().split('T')[0],
                         notes: activity.unit ? `${activity.value} ${activity.unit}` : undefined,
                       });
                       refetchActivities();

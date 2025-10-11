@@ -128,7 +128,7 @@ export const useSupabaseFitnessData = () => {
     }
   };
 
-  const addActivity = async (activity: Omit<Activity, 'id' | 'date'>) => {
+  const addActivity = async (activity: Omit<Activity, 'id'> & { date?: string }) => {
     if (!user) return;
 
     try {
@@ -138,7 +138,7 @@ export const useSupabaseFitnessData = () => {
         type: activity.type,
         value: activity.value,
         notes: activity.notes,
-        date: new Date().toISOString().split('T')[0],
+        date: activity.date || new Date().toISOString().split('T')[0],
       });
 
       if (error) throw error;
