@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Activity } from '@/types/fitness';
-import { Dumbbell, Route, Footprints, Scale, Calendar, Clock, FileText } from 'lucide-react';
+import { Dumbbell, Route, Footprints, Scale, Calendar, Clock, FileText, Activity as ActivityIcon, Waves } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
@@ -36,6 +36,24 @@ const activityConfig = {
     label: 'Weight',
     gradient: 'from-red-500 to-pink-500',
     bgGradient: 'from-red-500/10 to-pink-500/10',
+  },
+  running: {
+    icon: Route,
+    label: 'Running',
+    gradient: 'from-blue-500 to-cyan-500',
+    bgGradient: 'from-blue-500/10 to-cyan-500/10',
+  },
+  swimming: {
+    icon: Waves,
+    label: 'Swimming',
+    gradient: 'from-teal-500 to-emerald-500',
+    bgGradient: 'from-teal-500/10 to-emerald-500/10',
+  },
+  exercise: {
+    icon: ActivityIcon,
+    label: 'Exercise',
+    gradient: 'from-purple-500 to-indigo-500',
+    bgGradient: 'from-purple-500/10 to-indigo-500/10',
   },
 };
 
@@ -138,7 +156,15 @@ export function ActivityFeed({ activities, limit }: ActivityFeedProps) {
                                   ? 'km'
                                   : activity.type === 'steps'
                                   ? 'steps'
-                                  : 'kg'}
+                                  : activity.type === 'weight'
+                                  ? 'kg'
+                                  : activity.type === 'running'
+                                  ? 'km'
+                                  : activity.type === 'swimming'
+                                  ? 'laps'
+                                  : activity.type === 'exercise'
+                                  ? 'min'
+                                  : ''}
                               </span>
                             </div>
                             {activity.notes && (
