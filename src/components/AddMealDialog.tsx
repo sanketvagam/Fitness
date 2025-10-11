@@ -27,9 +27,8 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
     name: "",
     type: "breakfast" as "breakfast" | "lunch" | "dinner" | "snack",
     calories: "",
-    protein: "",
-    carbs: "",
-    fats: "",
+    nutrients: "",
+    micronutrients: "",
     notes: "",
   });
 
@@ -39,14 +38,12 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
   const handleFoodSelect = (foodName: string) => {
     const foodItem = foodDatabase.find(item => item.Food === foodName);
     if (foodItem) {
-      const nutrients = parseNutrients(foodItem.Nutrients);
       setFormData({
         ...formData,
         name: foodItem.Food,
         calories: foodItem.ItemCalories.toString(),
-        protein: nutrients.protein.toString(),
-        carbs: nutrients.carbs.toString(),
-        fats: nutrients.fats.toString(),
+        nutrients: foodItem.Nutrients,
+        micronutrients: foodItem.Micronutrients,
       });
     }
     setPopoverOpen(false);
@@ -64,13 +61,14 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
       return;
     }
 
+    const nutrients = parseNutrients(formData.nutrients);
     addMeal({
       name: formData.name,
       type: formData.type,
       calories: parseFloat(formData.calories),
-      protein: parseFloat(formData.protein) || 0,
-      carbs: parseFloat(formData.carbs) || 0,
-      fats: parseFloat(formData.fats) || 0,
+      protein: nutrients.protein,
+      carbs: nutrients.carbs,
+      fats: nutrients.fats,
       date: format(new Date(), 'yyyy-MM-dd'),
       notes: formData.notes,
     });
@@ -84,9 +82,8 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
       name: "",
       type: "breakfast",
       calories: "",
-      protein: "",
-      carbs: "",
-      fats: "",
+      nutrients: "",
+      micronutrients: "",
       notes: "",
     });
     
@@ -190,50 +187,39 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="calories">Calories *</Label>
-              <Input
-                id="calories"
-                type="number"
-                value={formData.calories}
-                onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
-                placeholder="500"
-              />
-            </div>
-            <div>
-              <Label htmlFor="protein">Protein (g)</Label>
-              <Input
-                id="protein"
-                type="number"
-                value={formData.protein}
-                onChange={(e) => setFormData({ ...formData, protein: e.target.value })}
-                placeholder="30"
-              />
-            </div>
+          <div>
+            <Label htmlFor="calories">Calories (kcal/100g) *</Label>
+            <Input
+              id="calories"
+              type="number"
+              value={formData.calories}
+              onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
+              placeholder="131"
+            />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="carbs">Carbs (g)</Label>
-              <Input
-                id="carbs"
-                type="number"
-                value={formData.carbs}
-                onChange={(e) => setFormData({ ...formData, carbs: e.target.value })}
-                placeholder="40"
-              />
-            </div>
-            <div>
-              <Label htmlFor="fats">Fats (g)</Label>
-              <Input
-                id="fats"
-                type="number"
-                value={formData.fats}
-                onChange={(e) => setFormData({ ...formData, fats: e.target.value })}
-                placeholder="15"
-              />
-            </div>
+          <div>
+            <Label htmlFor="nutrients">Nutrients</Label>
+            <Textarea
+              id="nutrients"
+              value={formData.nutrients}
+              onChange={(e) => setFormData({ ...formData, nutrients: e.target.value })}
+              placeholder="9.0Protein(g), 48.0Carbs(g), 7.0Fat(g), 6.5Fiber(g), 45Calcium(mg)..."
+              rows={3}
+              className="text-sm"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="micronutrients">Micronutrients</Label>
+            <Textarea
+              id="micronutrients"
+              value={formData.micronutrients}
+              onChange={(e) => setFormData({ ...formData, micronutrients: e.target.value })}
+              placeholder="0Vit A(μg RAE), 0Vit C(mg), 0.18Vit B6(mg), 38Folate(μg)..."
+              rows={2}
+              className="text-sm"
+            />
           </div>
 
           <div>
