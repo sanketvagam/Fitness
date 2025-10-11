@@ -15,7 +15,7 @@ import { UserProfileDialog } from "@/components/UserProfileDialog";
 import { BMICard } from "@/components/BMICard";
 import { CalorieCard } from "@/components/CalorieCard";
 import { WorkoutPlansDialog } from "@/components/WorkoutPlansDialog";
-import { IntegrationsDialog } from "@/components/IntegrationsDialog";
+import { ConnectFitnessApps } from "@/components/ConnectFitnessApps";
 import { ProgressDashboard } from "@/components/ProgressDashboard";
 import { MealPlanner } from "@/components/MealPlanner";
 import { BadgeCard } from "@/components/BadgeCard";
@@ -446,7 +446,7 @@ const Index = () => {
         onSave={handleSaveProfile}
         currentProfile={userProfile || undefined}
       />
-      <IntegrationsDialog
+      <ConnectFitnessApps
         open={integrationsDialogOpen}
         onOpenChange={setIntegrationsDialogOpen}
       />
