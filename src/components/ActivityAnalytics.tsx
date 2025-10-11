@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Activity } from '@/types/fitness';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { TrendingUp, Calendar, Activity as ActivityIcon } from 'lucide-react';
+import { TrendingUp, Calendar } from 'lucide-react';
 import { format, subDays, eachDayOfInterval } from 'date-fns';
 
 interface ActivityAnalyticsProps {
@@ -13,10 +12,10 @@ interface ActivityAnalyticsProps {
 }
 
 const activityColors = {
-  workout: '#8b5cf6',
-  distance: '#06b6d4',
-  steps: '#f59e0b',
-  weight: '#ec4899',
+  workout: 'hsl(var(--primary))',
+  distance: 'hsl(var(--primary))',
+  steps: 'hsl(var(--primary))',
+  weight: 'hsl(var(--primary))',
 };
 
 export function ActivityAnalytics({ activities }: ActivityAnalyticsProps) {
@@ -105,57 +104,54 @@ export function ActivityAnalytics({ activities }: ActivityAnalyticsProps) {
 
   return (
     <div className="space-y-6">
-      <Card className="overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-500 to-cyan-500 px-4 py-3">
+      <Card>
+        <CardHeader>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-white">
+            <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5" />
-              <h3 className="font-bold">Activity Analytics</h3>
+              <CardTitle className="text-lg">Activity Analytics</CardTitle>
             </div>
             <div className="flex gap-2">
               <Button
-                variant={timeRange === '7' ? 'secondary' : 'ghost'}
+                variant={timeRange === '7' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimeRange('7')}
-                className={timeRange === '7' ? '' : 'text-white hover:bg-white/20'}
               >
                 7D
               </Button>
               <Button
-                variant={timeRange === '30' ? 'secondary' : 'ghost'}
+                variant={timeRange === '30' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimeRange('30')}
-                className={timeRange === '30' ? '' : 'text-white hover:bg-white/20'}
               >
                 30D
               </Button>
               <Button
-                variant={timeRange === '90' ? 'secondary' : 'ghost'}
+                variant={timeRange === '90' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setTimeRange('90')}
-                className={timeRange === '90' ? '' : 'text-white hover:bg-white/20'}
               >
                 90D
               </Button>
             </div>
           </div>
-        </div>
+        </CardHeader>
 
-        <div className="p-6 space-y-6">
+        <CardContent className="space-y-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="p-4 bg-gradient-to-br from-purple-500/10 to-indigo-500/10">
+            <Card className="p-4">
               <div className="text-sm text-muted-foreground mb-1">Total Activities</div>
               <div className="text-2xl font-bold">{insights.totalActivities}</div>
             </Card>
-            <Card className="p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10">
+            <Card className="p-4">
               <div className="text-sm text-muted-foreground mb-1">Avg Per Day</div>
               <div className="text-2xl font-bold">{insights.avgPerDay}</div>
             </Card>
-            <Card className="p-4 bg-gradient-to-br from-orange-500/10 to-yellow-500/10">
+            <Card className="p-4">
               <div className="text-sm text-muted-foreground mb-1">Workouts</div>
               <div className="text-2xl font-bold">{insights.totalWorkouts}</div>
             </Card>
-            <Card className="p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10">
+            <Card className="p-4">
               <div className="text-sm text-muted-foreground mb-1">Distance</div>
               <div className="text-2xl font-bold">{insights.totalDistance}km</div>
             </Card>
@@ -186,13 +182,7 @@ export function ActivityAnalytics({ activities }: ActivityAnalyticsProps) {
                         borderRadius: '8px',
                       }}
                     />
-                    <Bar dataKey="total" fill="url(#colorGradient)" radius={[8, 8, 0, 0]} />
-                    <defs>
-                      <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.8} />
-                        <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.8} />
-                      </linearGradient>
-                    </defs>
+                    <Bar dataKey="total" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -219,7 +209,7 @@ export function ActivityAnalytics({ activities }: ActivityAnalyticsProps) {
                     />
                     <Bar dataKey="value" radius={[0, 8, 8, 0]}>
                       {typeStats.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
+                        <Cell key={`cell-${index}`} fill="hsl(var(--primary))" />
                       ))}
                     </Bar>
                   </BarChart>
@@ -248,7 +238,7 @@ export function ActivityAnalytics({ activities }: ActivityAnalyticsProps) {
                     <Line
                       type="monotone"
                       dataKey="workout"
-                      stroke={activityColors.workout}
+                      stroke="hsl(var(--primary))"
                       strokeWidth={2}
                       dot={{ r: 4 }}
                       name="Workouts"
@@ -256,7 +246,7 @@ export function ActivityAnalytics({ activities }: ActivityAnalyticsProps) {
                     <Line
                       type="monotone"
                       dataKey="distance"
-                      stroke={activityColors.distance}
+                      stroke="hsl(var(--muted-foreground))"
                       strokeWidth={2}
                       dot={{ r: 4 }}
                       name="Distance"
@@ -267,10 +257,10 @@ export function ActivityAnalytics({ activities }: ActivityAnalyticsProps) {
             </TabsContent>
           </Tabs>
 
-          <Card className="p-4 bg-gradient-to-br from-blue-500/5 to-cyan-500/5">
+          <Card className="p-4">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
-                <Calendar className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                <Calendar className="w-5 h-5" />
               </div>
               <div className="flex-1">
                 <h4 className="font-semibold mb-1">Most Active Day</h4>
@@ -280,7 +270,7 @@ export function ActivityAnalytics({ activities }: ActivityAnalyticsProps) {
               </div>
             </div>
           </Card>
-        </div>
+        </CardContent>
       </Card>
     </div>
   );

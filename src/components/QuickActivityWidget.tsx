@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Dumbbell, Route, Footprints, Scale, Plus, Zap } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Dumbbell, Route, Footprints, Scale, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -21,7 +20,6 @@ const activityTypes = [
     icon: Dumbbell,
     label: 'Workout',
     unit: 'session',
-    gradient: 'from-purple-500 to-indigo-500',
     quickValues: [1, 2, 3],
   },
   {
@@ -29,7 +27,6 @@ const activityTypes = [
     icon: Route,
     label: 'Run',
     unit: 'km',
-    gradient: 'from-blue-500 to-cyan-500',
     quickValues: [2, 5, 10],
   },
   {
@@ -37,7 +34,6 @@ const activityTypes = [
     icon: Footprints,
     label: 'Steps',
     unit: 'steps',
-    gradient: 'from-orange-500 to-yellow-500',
     quickValues: [5000, 10000, 15000],
   },
   {
@@ -45,7 +41,6 @@ const activityTypes = [
     icon: Scale,
     label: 'Weight',
     unit: 'kg',
-    gradient: 'from-red-500 to-pink-500',
     quickValues: [0.5, 1, 2],
   },
 ];
@@ -60,7 +55,7 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
       type: type.type,
       value: quickValue,
     });
-    toast.success(`${quickValue} ${type.unit} logged! 💪`);
+    toast.success(`${quickValue} ${type.unit} logged!`);
   };
 
   const handleCustomLog = () => {
@@ -74,37 +69,31 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
       value: Number(value),
     });
 
-    toast.success(`${value} ${selectedType.unit} logged! 💪`);
+    toast.success(`${value} ${selectedType.unit} logged!`);
     setValue('');
     setSelectedType(null);
     setIsExpanded(false);
   };
 
   return (
-    <Card className="overflow-hidden border-2 border-primary/20">
-      <div className="bg-gradient-to-r from-blue-500 to-cyan-500 px-4 py-3">
+    <Card>
+      <CardHeader>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white">
-            <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <Zap className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-bold">Quick Log</h3>
-              <p className="text-xs text-white/90">Track your activity instantly</p>
-            </div>
+          <div>
+            <CardTitle className="text-lg">Quick Log</CardTitle>
+            <CardDescription>Track your activity instantly</CardDescription>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-white hover:bg-white/20"
           >
             {isExpanded ? 'Simple' : 'Custom'}
           </Button>
         </div>
-      </div>
+      </CardHeader>
 
-      <div className="p-4">
+      <CardContent>
         <AnimatePresence mode="wait">
           {!isExpanded ? (
             <motion.div
@@ -119,14 +108,7 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
                 return (
                   <div key={type.type} className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div
-                        className={cn(
-                          'w-8 h-8 rounded-lg bg-gradient-to-br flex items-center justify-center',
-                          type.gradient
-                        )}
-                      >
-                        <Icon className="w-4 h-4 text-white" />
-                      </div>
+                      <Icon className="w-4 h-4 text-muted-foreground" />
                       <span className="font-medium text-sm">{type.label}</span>
                       <Badge variant="outline" className="ml-auto text-xs">
                         {type.unit}
@@ -168,7 +150,7 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
                       onClick={() => setSelectedType(type)}
                       className="h-auto py-3 flex flex-col gap-1"
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-4 h-4" />
                       <span className="text-xs">{type.label}</span>
                     </Button>
                   );
@@ -193,7 +175,6 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
                     <Button
                       onClick={handleCustomLog}
                       disabled={!value}
-                      className={cn('bg-gradient-to-r', selectedType.gradient)}
                     >
                       <Plus className="w-4 h-4 mr-1" />
                       Log
@@ -204,7 +185,7 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </CardContent>
     </Card>
   );
 }

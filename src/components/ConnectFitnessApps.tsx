@@ -22,54 +22,36 @@ const fitnessApps = [
     id: 'strava',
     name: 'Strava',
     description: 'Track running and cycling activities',
-    icon: '🏃',
-    gradient: 'from-orange-500 to-red-500',
-    color: '#FC4C02',
     features: ['Running', 'Cycling', 'Distance', 'Elevation'],
   },
   {
     id: 'fitbit',
     name: 'Fitbit',
     description: 'Sync steps, heart rate, and sleep data',
-    icon: '⌚',
-    gradient: 'from-teal-500 to-cyan-500',
-    color: '#00B0B9',
     features: ['Steps', 'Heart Rate', 'Sleep', 'Calories'],
   },
   {
     id: 'garmin',
     name: 'Garmin',
     description: 'Import workouts and health metrics',
-    icon: '📍',
-    gradient: 'from-blue-600 to-blue-500',
-    color: '#007CC3',
     features: ['GPS', 'Workouts', 'Heart Rate', 'VO2 Max'],
   },
   {
     id: 'apple_health',
     name: 'Apple Health',
     description: 'Sync all your Apple Health data',
-    icon: '🍎',
-    gradient: 'from-pink-500 to-red-500',
-    color: '#FF2D55',
     features: ['Steps', 'Workouts', 'Heart Rate', 'Nutrition'],
   },
   {
     id: 'google_fit',
     name: 'Google Fit',
     description: 'Connect your Google Fit activities',
-    icon: '💪',
-    gradient: 'from-green-500 to-emerald-500',
-    color: '#4285F4',
     features: ['Activity', 'Steps', 'Weight', 'Nutrition'],
   },
   {
     id: 'myfitnesspal',
     name: 'MyFitnessPal',
     description: 'Import nutrition and calorie data',
-    icon: '🍽️',
-    gradient: 'from-blue-500 to-indigo-500',
-    color: '#0071E3',
     features: ['Calories', 'Nutrition', 'Meals', 'Weight'],
   },
 ];
@@ -120,9 +102,7 @@ export function ConnectFitnessApps({ open, onOpenChange }: ConnectFitnessAppsPro
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-              <Link2 className="w-5 h-5 text-white" />
-            </div>
+            <Link2 className="w-5 h-5" />
             Connect Fitness Apps
           </DialogTitle>
           <DialogDescription>
@@ -160,21 +140,18 @@ export function ConnectFitnessApps({ open, onOpenChange }: ConnectFitnessAppsPro
                     >
                       <Card className={cn(
                         'p-4 transition-all hover:shadow-lg',
-                        connected && 'border-green-500 border-2'
+                        connected && 'border-primary border-2'
                       )}>
                         <div className="flex items-start gap-4">
-                          <div className={cn(
-                            'w-14 h-14 rounded-xl bg-gradient-to-br flex items-center justify-center text-2xl shadow-lg flex-shrink-0',
-                            app.gradient
-                          )}>
-                            {app.icon}
+                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                            <Link2 className="w-5 h-5 text-muted-foreground" />
                           </div>
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="font-bold text-lg">{app.name}</h3>
                               {connected && (
-                                <Badge className="bg-green-500 hover:bg-green-600">
+                                <Badge variant="default">
                                   <CheckCircle2 className="w-3 h-3 mr-1" />
                                   Connected
                                 </Badge>
@@ -206,7 +183,7 @@ export function ConnectFitnessApps({ open, onOpenChange }: ConnectFitnessAppsPro
                                 <Button
                                   onClick={() => handleConnect(app.id)}
                                   disabled={connectingApp === app.id || loading}
-                                  className={cn('w-full bg-gradient-to-r', app.gradient)}
+                                  className="w-full"
                                   size="sm"
                                 >
                                   {connectingApp === app.id ? (
@@ -280,17 +257,14 @@ export function ConnectFitnessApps({ open, onOpenChange }: ConnectFitnessAppsPro
                     return (
                       <Card key={integration.id} className="p-4">
                         <div className="flex items-center gap-4">
-                          <div className={cn(
-                            'w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center text-xl shadow-lg',
-                            appInfo.gradient
-                          )}>
-                            {appInfo.icon}
+                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                            <Link2 className="w-5 h-5 text-muted-foreground" />
                           </div>
 
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="font-bold">{appInfo.name}</h3>
-                              <Badge className="bg-green-500">Active</Badge>
+                              <Badge variant="default">Active</Badge>
                             </div>
                             {integration.lastSync ? (
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -349,26 +323,17 @@ export function ConnectFitnessApps({ open, onOpenChange }: ConnectFitnessAppsPro
                     const appInfo = fitnessApps.find(app => app.id === integration?.provider);
 
                     return (
-                      <Card key={sync.id} className={cn(
-                        'p-4',
-                        sync.status === 'success' && 'bg-green-500/5 border-green-500/20',
-                        sync.status === 'failed' && 'bg-red-500/5 border-red-500/20'
-                      )}>
+                      <Card key={sync.id} className="p-4">
                         <div className="flex items-start gap-4">
-                          {appInfo && (
-                            <div className={cn(
-                              'w-10 h-10 rounded-lg bg-gradient-to-br flex items-center justify-center text-lg',
-                              appInfo.gradient
-                            )}>
-                              {appInfo.icon}
-                            </div>
-                          )}
+                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                            <Activity className="w-5 h-5 text-muted-foreground" />
+                          </div>
 
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <h4 className="font-semibold">{appInfo?.name || 'Unknown App'}</h4>
                               {sync.status === 'success' && (
-                                <Badge className="bg-green-500">
+                                <Badge variant="default">
                                   <CheckCircle2 className="w-3 h-3 mr-1" />
                                   Success
                                 </Badge>
