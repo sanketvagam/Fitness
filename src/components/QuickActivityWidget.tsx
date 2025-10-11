@@ -3,14 +3,14 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Waves, Footprints, Scale, Plus, Zap } from 'lucide-react';
+import { Activity, Waves, Footprints, Plus, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
 interface QuickActivityWidgetProps {
   onLogActivity: (activity: {
-    type: 'running' | 'swimming' | 'steps' | 'weight' | 'exercise';
+    type: 'running' | 'swimming' | 'steps' | 'exercise';
     value: number;
     unit?: string;
   }) => void;
@@ -49,15 +49,6 @@ const activityTypes = [
     color: 'from-teal-500 to-emerald-500',
     quickValues: [10, 20, 30],
   },
-  {
-    type: 'weight' as const,
-    icon: Scale,
-    label: 'Weight',
-    unit: 'kg',
-    color: 'from-red-500 to-pink-500',
-    quickValues: [0.5, 1, 2],
-  }
-
 ];
 
 export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps) {
