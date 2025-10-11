@@ -2,11 +2,12 @@ import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, UtensilsCrossed, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AddMealDialog } from "./AddMealDialog";
 import { useMealData } from "@/hooks/useMealData";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { CalorieData } from "@/types/fitness";
+import { CalorieData, Meal } from "@/types/fitness";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,6 +17,8 @@ interface MealPlannerProps {
 
 export function MealPlanner({ calorieData }: MealPlannerProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+  const [mealDetailsOpen, setMealDetailsOpen] = useState(false);
   const { meals, getWeeklyNutrition, deleteMeal } = useMealData();
   const { toast } = useToast();
 
@@ -169,13 +172,20 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
                           const displayName = `${meal.type}${typeCount}`;
 
                           return (
-                          <TableRow key={meal.id}>
+                          <TableRow
+                            key={meal.id}
+                            className="cursor-pointer hover:bg-muted/50"
+                            onClick={() => {
+                              setSelectedMeal(meal);
+                              setMealDetailsOpen(true);
+                            }}
+                          >
                             <TableCell className="font-medium capitalize">{displayName}</TableCell>
                             <TableCell className="text-right">{meal.calories}</TableCell>
                             <TableCell className="text-right">{Math.round(meal.protein)}</TableCell>
                             <TableCell className="text-right">{Math.round(meal.carbs)}</TableCell>
                             <TableCell className="text-right">{Math.round(meal.fats)}</TableCell>
-                            <TableCell>
+                            <TableCell onClick={(e) => e.stopPropagation()}>
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -208,6 +218,66 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
       />
+
+      <Dialog open={mealDetailsOpen} onOpenChange={setMealDetailsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="capitalize">
+              {selectedMeal && (() => {
+                const sameTypeMeals = meals.filter(m =>
+                  m.type === selectedMeal.type &&
+                  m.date === selectedMeal.date
+                );
+                const typeCount = sameTypeMeals.findIndex(m => m.id === selectedMeal.id) + 1;
+                return `${selectedMeal.type}${typeCount}`;
+              })()}
+            </DialogTitle>
+            <DialogDescription>
+              Meal details and nutritional information
+            </DialogDescription>
+          </DialogHeader>
+          {selectedMeal && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-lg mb-2">{selectedMeal.name}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {format(new Date(selectedMeal.date), 'MMMM d, yyyy')}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Calories</p>
+                  <p className="text-2xl font-bold">{selectedMeal.calories}</p>
+                  <p className="text-xs text-muted-foreground">kcal</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Protein</p>
+                  <p className="text-2xl font-bold">{Math.round(selectedMeal.protein)}</p>
+                  <p className="text-xs text-muted-foreground">grams</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Carbs</p>
+                  <p className="text-2xl font-bold">{Math.round(selectedMeal.carbs)}</p>
+                  <p className="text-xs text-muted-foreground">grams</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Fats</p>
+                  <p className="text-2xl font-bold">{Math.round(selectedMeal.fats)}</p>
+                  <p className="text-xs text-muted-foreground">grams</p>
+                </div>
+              </div>
+
+              {selectedMeal.notes && (
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold">Notes</p>
+                  <p className="text-sm text-muted-foreground">{selectedMeal.notes}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
