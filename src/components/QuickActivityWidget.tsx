@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Waves, Footprints, Scale, Plus, Zap } from 'lucide-react';
+import { Activity, Waves, Footprints, Scale, Plus, Zap } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';

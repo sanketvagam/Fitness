@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { User, Settings, LogOut } from 'lucide-react';
+import { User, Settings, LogOut } from '@/components/icons';
 
 interface UserMenuProps {
   onOpenProfile: () => void;

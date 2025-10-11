@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { UserLevel } from "@/types/fitness";
 import { motion } from "framer-motion";
-import { Trophy, Zap } from "lucide-react";
+import { Trophy, Zap } from '@/components/icons';
 
 interface LevelProgressProps {
   userLevel: UserLevel;

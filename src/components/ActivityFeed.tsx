@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Activity } from '@/types/fitness';
-import { Dumbbell, Route, Footprints, Scale, Calendar, Clock, FileText, Activity as ActivityIcon, Waves } from 'lucide-react';
+import { Dumbbell, Route, Footprints, Scale, Calendar, Clock, FileText, Activity as ActivityIcon, Waves } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { format, formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';

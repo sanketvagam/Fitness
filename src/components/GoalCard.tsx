@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { FitnessGoal } from "@/types/fitness";
-import { Target, Trash2, Calendar, TrendingUp } from "lucide-react";
+import { Target, Trash2, Calendar, TrendingUp } from '@/components/icons';
 import { cn } from "@/lib/utils";
 
 interface GoalCardProps {

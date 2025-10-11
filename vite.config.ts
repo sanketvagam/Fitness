@@ -86,7 +86,6 @@ export default defineConfig(() => ({
           "supabase": ["@supabase/supabase-js"],
           "query": ["@tanstack/react-query"],
           "date": ["date-fns"],
-          "icons": ["lucide-react"],
 
           // Utilities
           "utils": [

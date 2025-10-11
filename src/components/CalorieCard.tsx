@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { CalorieData } from "@/types/fitness";
-import { Utensils } from "lucide-react";
+import { Utensils } from '@/components/icons';
 import { useMealData } from "@/hooks/useMealData";
 import { ProgressRing } from "./ProgressRing";
 

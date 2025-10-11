@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Activity } from '@/types/fitness';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { TrendingUp, Calendar, Activity as ActivityIcon } from 'lucide-react';
+import { TrendingUp, Calendar, Activity as ActivityIcon } from '@/components/icons';
 import { format, subDays, eachDayOfInterval } from 'date-fns';
 
 interface ActivityAnalyticsProps {

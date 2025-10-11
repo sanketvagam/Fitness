@@ -1,6 +1,6 @@
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from '@/components/icons';
 import { motion } from 'framer-motion';
 
 export function ThemeSwitcher() {

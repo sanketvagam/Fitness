@@ -1,11 +1,11 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useHabits } from '@/hooks/useHabits';
-import { Plus, CheckCircle2, Circle, Flame, Trash2 } from 'lucide-react';
+import { Plus, CheckCircle2, Circle, Flame, Trash2 } from '@/components/icons';
 import { motion } from 'framer-motion';
 import { AddHabitDialog } from './AddHabitDialog';
 import { useState } from 'react';
-import * as LucideIcons from 'lucide-react';
+import * as LucideIcons from '@/components/icons';
 
 export function HabitTracker() {
   const { habits, toggleHabitCompletion, isHabitCompletedToday, deleteHabit } = useHabits();

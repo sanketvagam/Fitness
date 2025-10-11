@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, UtensilsCrossed, Trash2 } from "lucide-react";
+import { Plus, UtensilsCrossed, Trash2 } from '@/components/icons';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AddMealDialog } from "./AddMealDialog";
 import { useMealData } from "@/hooks/useMealData";
