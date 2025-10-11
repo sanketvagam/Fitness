@@ -76,7 +76,7 @@ export const SignupDialog = ({ open, onOpenChange, onSwitchToLogin }: SignupDial
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">Create Account</DialogTitle>
           <DialogDescription className="text-center">
-            Join HabitBar and start building lasting habits today
+            Workout Plans and start building lasting habits today
           </DialogDescription>
         </DialogHeader>
 
