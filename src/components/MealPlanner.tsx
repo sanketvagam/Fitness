@@ -158,6 +158,7 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
                       <TableHeader>
                         <TableRow>
                           <TableHead>Meal Type</TableHead>
+                          <TableHead>Item Name</TableHead>
                           <TableHead className="text-right">Calories (kcal/100g)</TableHead>
                           <TableHead className="text-right">Protein (g)</TableHead>
                           <TableHead className="text-right">Carbs (g)</TableHead>
@@ -181,6 +182,7 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
                             }}
                           >
                             <TableCell className="font-medium capitalize">{displayName}</TableCell>
+                            <TableCell className="font-medium">{meal.name}</TableCell>
                             <TableCell className="text-right">{meal.calories}</TableCell>
                             <TableCell className="text-right">{Math.round(meal.protein)}</TableCell>
                             <TableCell className="text-right">{Math.round(meal.carbs)}</TableCell>
