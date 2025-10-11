@@ -23,17 +23,21 @@ export const LoginDialog = ({ open, onOpenChange, onSwitchToSignup }: LoginDialo
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setLoading(true);
 
-    const { error } = await signIn(email, password);
+    const { error: signInError } = await signIn(email, password);
 
-    if (!error) {
+    if (!signInError) {
       onOpenChange(false);
       setEmail('');
       setPassword('');
+    } else {
+      setError(signInError.message);
     }
 
     setLoading(false);
@@ -52,6 +56,12 @@ export const LoginDialog = ({ open, onOpenChange, onSwitchToSignup }: LoginDialo
 
         <div className="space-y-4 py-4">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+                {error}
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
