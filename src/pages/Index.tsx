@@ -30,7 +30,7 @@ import { QuickActivityWidget } from "@/components/QuickActivityWidget";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { ActivityAnalytics } from "@/components/ActivityAnalytics";
 import { Target, TrendingUp, Award, Flame, Link2, Trophy, Users } from "lucide-react";
-import { UserProfile, BMIData, CalorieData } from "@/types/fitness";
+import { UserProfile, BMIData, CalorieData, GoalType } from "@/types/fitness";
 import { calculateBMI, calculateCalories } from "@/utils/calculations";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -180,10 +180,7 @@ const Index = () => {
               <div className="lg:col-span-1">
                 <QuickActivityWidget
                   onLogActivity={async (activity) => {
-                    if (goals.length === 0) {
-                      return;
-                    }
-                    const matchingGoal = goals.find(
+                    let matchingGoal = goals.find(
                       (g) =>
                         (activity.type === 'exercise' && g.type === 'gym-frequency') ||
                         (activity.type === 'running' && g.type === 'run-distance') ||
@@ -191,6 +188,35 @@ const Index = () => {
                         (activity.type === 'steps' && g.type === 'daily-steps') ||
                         (activity.type === 'weight' && g.type === 'weight-loss')
                     );
+
+                    if (!matchingGoal) {
+                      const goalDefaults: Record<string, { type: GoalType; title: string; target: number; unit: string; category: string }> = {
+                        exercise: { type: 'gym-frequency', title: 'Workout Frequency', target: 50, unit: 'sessions', category: 'fitness' },
+                        running: { type: 'run-distance', title: 'Running Distance', target: 100, unit: 'km', category: 'cardio' },
+                        swimming: { type: 'gym-frequency', title: 'Swimming Sessions', target: 30, unit: 'laps', category: 'cardio' },
+                        steps: { type: 'daily-steps', title: 'Daily Steps', target: 300000, unit: 'steps', category: 'activity' },
+                      };
+
+                      const defaultGoal = goalDefaults[activity.type];
+                      if (defaultGoal) {
+                        const endDate = new Date();
+                        endDate.setMonth(endDate.getMonth() + 1);
+                        await addGoal({
+                          ...defaultGoal,
+                          current: 0,
+                          deadline: endDate.toISOString().split('T')[0],
+                        });
+                        await refetchGoals();
+                        matchingGoal = goals.find(
+                          (g) =>
+                            (activity.type === 'exercise' && g.type === 'gym-frequency') ||
+                            (activity.type === 'running' && g.type === 'run-distance') ||
+                            (activity.type === 'swimming' && g.type === 'gym-frequency') ||
+                            (activity.type === 'steps' && g.type === 'daily-steps')
+                        );
+                      }
+                    }
+
                     if (matchingGoal) {
                       await addActivity({
                         goalId: matchingGoal.id,
@@ -230,10 +256,7 @@ const Index = () => {
               <div className="lg:col-span-1">
                 <QuickActivityWidget
                   onLogActivity={async (activity) => {
-                    if (goals.length === 0) {
-                      return;
-                    }
-                    const matchingGoal = goals.find(
+                    let matchingGoal = goals.find(
                       (g) =>
                         (activity.type === 'exercise' && g.type === 'gym-frequency') ||
                         (activity.type === 'running' && g.type === 'run-distance') ||
@@ -241,6 +264,35 @@ const Index = () => {
                         (activity.type === 'steps' && g.type === 'daily-steps') ||
                         (activity.type === 'weight' && g.type === 'weight-loss')
                     );
+
+                    if (!matchingGoal) {
+                      const goalDefaults: Record<string, { type: GoalType; title: string; target: number; unit: string; category: string }> = {
+                        exercise: { type: 'gym-frequency', title: 'Workout Frequency', target: 50, unit: 'sessions', category: 'fitness' },
+                        running: { type: 'run-distance', title: 'Running Distance', target: 100, unit: 'km', category: 'cardio' },
+                        swimming: { type: 'gym-frequency', title: 'Swimming Sessions', target: 30, unit: 'laps', category: 'cardio' },
+                        steps: { type: 'daily-steps', title: 'Daily Steps', target: 300000, unit: 'steps', category: 'activity' },
+                      };
+
+                      const defaultGoal = goalDefaults[activity.type];
+                      if (defaultGoal) {
+                        const endDate = new Date();
+                        endDate.setMonth(endDate.getMonth() + 1);
+                        await addGoal({
+                          ...defaultGoal,
+                          current: 0,
+                          deadline: endDate.toISOString().split('T')[0],
+                        });
+                        await refetchGoals();
+                        matchingGoal = goals.find(
+                          (g) =>
+                            (activity.type === 'exercise' && g.type === 'gym-frequency') ||
+                            (activity.type === 'running' && g.type === 'run-distance') ||
+                            (activity.type === 'swimming' && g.type === 'gym-frequency') ||
+                            (activity.type === 'steps' && g.type === 'daily-steps')
+                        );
+                      }
+                    }
+
                     if (matchingGoal) {
                       await addActivity({
                         goalId: matchingGoal.id,
