@@ -41,6 +41,11 @@ export const SignupDialog = ({ open, onOpenChange, onSwitchToLogin }: SignupDial
       return;
     }
 
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+      setError('Password must contain at least one letter and one number');
+      return;
+    }
+
     setLoading(true);
 
     const { error } = await signUp(email, password, name);
@@ -124,6 +129,9 @@ export const SignupDialog = ({ open, onOpenChange, onSwitchToLogin }: SignupDial
                   disabled={loading}
                 />
               </div>
+              <p className="text-xs text-muted-foreground">
+                At least 6 characters with a letter and number
+              </p>
             </div>
 
             <div className="space-y-2">
