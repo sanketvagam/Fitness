@@ -185,8 +185,9 @@ const Index = () => {
                     }
                     const matchingGoal = goals.find(
                       (g) =>
-                        (activity.type === 'workout' && g.type === 'gym-frequency') ||
-                        (activity.type === 'distance' && g.type === 'run-distance') ||
+                        (activity.type === 'exercise' && g.type === 'gym-frequency') ||
+                        (activity.type === 'running' && g.type === 'run-distance') ||
+                        (activity.type === 'swimming' && g.type === 'gym-frequency') ||
                         (activity.type === 'steps' && g.type === 'daily-steps') ||
                         (activity.type === 'weight' && g.type === 'weight-loss')
                     );
@@ -196,6 +197,7 @@ const Index = () => {
                         type: activity.type,
                         value: activity.value,
                         date: new Date().toISOString().split('T')[0],
+                        notes: activity.unit ? `${activity.value} ${activity.unit}` : undefined,
                       });
                       refetchActivities();
                       refetchGoals();
@@ -234,8 +236,9 @@ const Index = () => {
                     }
                     const matchingGoal = goals.find(
                       (g) =>
-                        (activity.type === 'workout' && g.type === 'gym-frequency') ||
-                        (activity.type === 'distance' && g.type === 'run-distance') ||
+                        (activity.type === 'exercise' && g.type === 'gym-frequency') ||
+                        (activity.type === 'running' && g.type === 'run-distance') ||
+                        (activity.type === 'swimming' && g.type === 'gym-frequency') ||
                         (activity.type === 'steps' && g.type === 'daily-steps') ||
                         (activity.type === 'weight' && g.type === 'weight-loss')
                     );
@@ -245,6 +248,7 @@ const Index = () => {
                         type: activity.type,
                         value: activity.value,
                         date: new Date().toISOString().split('T')[0],
+                        notes: activity.unit ? `${activity.value} ${activity.unit}` : undefined,
                       });
                       refetchActivities();
                       refetchGoals();

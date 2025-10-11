@@ -3,41 +3,42 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Dumbbell, Route, Footprints, Scale, Plus, Zap } from 'lucide-react';
+import { Activity, Waves, Footprints, Scale, Plus, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
 interface QuickActivityWidgetProps {
   onLogActivity: (activity: {
-    type: 'workout' | 'distance' | 'steps' | 'weight';
+    type: 'running' | 'swimming' | 'steps' | 'weight' | 'exercise';
     value: number;
+    unit?: string;
   }) => void;
 }
 
 const activityTypes = [
   {
-    type: 'workout' as const,
-    icon: Dumbbell,
-    label: 'Workout',
-    unit: 'session',
-    gradient: 'from-purple-500 to-indigo-500',
-    quickValues: [1, 2, 3],
+    type: 'running' as const,
+    icon: Activity,
+    label: 'Running',
+    unit: 'km',
+    color: 'from-blue-500 to-cyan-500',
+    quickValues: [2, 5, 10],
   },
   {
-    type: 'distance' as const,
-    icon: Route,
-    label: 'Run',
-    unit: 'km',
-    gradient: 'from-blue-500 to-cyan-500',
-    quickValues: [2, 5, 10],
+    type: 'swimming' as const,
+    icon: Waves,
+    label: 'Swimming',
+    unit: 'laps',
+    color: 'from-teal-500 to-emerald-500',
+    quickValues: [10, 20, 30],
   },
   {
     type: 'steps' as const,
     icon: Footprints,
     label: 'Steps',
     unit: 'steps',
-    gradient: 'from-orange-500 to-yellow-500',
+    color: 'from-orange-500 to-yellow-500',
     quickValues: [5000, 10000, 15000],
   },
   {
@@ -45,9 +46,16 @@ const activityTypes = [
     icon: Scale,
     label: 'Weight',
     unit: 'kg',
-    gradient: 'from-red-500 to-pink-500',
+    color: 'from-red-500 to-pink-500',
     quickValues: [0.5, 1, 2],
   },
+];
+
+const exerciseTypes = [
+  { label: '5 min', value: 5, unit: 'minutes' },
+  { label: '10 min', value: 10, unit: 'minutes' },
+  { label: '15 min', value: 15, unit: 'minutes' },
+  { label: '20 min', value: 20, unit: 'minutes' },
 ];
 
 export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps) {
@@ -61,6 +69,15 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
       value: quickValue,
     });
     toast.success(`${quickValue} ${type.unit} logged! 💪`);
+  };
+
+  const handleExerciseLog = (duration: { label: string; value: number; unit: string }) => {
+    onLogActivity({
+      type: 'exercise',
+      value: duration.value,
+      unit: duration.unit,
+    });
+    toast.success(`${duration.label} exercise logged! 💪`);
   };
 
   const handleCustomLog = () => {
@@ -122,7 +139,7 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
                       <div
                         className={cn(
                           'w-8 h-8 rounded-lg bg-gradient-to-br flex items-center justify-center',
-                          type.gradient
+                          type.color
                         )}
                       >
                         <Icon className="w-4 h-4 text-white" />
@@ -149,6 +166,29 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
                   </div>
                 );
               })}
+
+              <div className="pt-2 border-t">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+                    <Activity className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="font-medium text-sm">Personalized Exercise</span>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {exerciseTypes.map((duration) => (
+                    <Button
+                      key={duration.value}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleExerciseLog(duration)}
+                      className="h-9 flex flex-col gap-0.5 py-1"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span className="text-xs">{duration.label}</span>
+                    </Button>
+                  ))}
+                </div>
+              </div>
             </motion.div>
           ) : (
             <motion.div
@@ -193,7 +233,7 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
                     <Button
                       onClick={handleCustomLog}
                       disabled={!value}
-                      className={cn('bg-gradient-to-r', selectedType.gradient)}
+                      className={cn('bg-gradient-to-r', selectedType.color)}
                     >
                       <Plus className="w-4 h-4 mr-1" />
                       Log
