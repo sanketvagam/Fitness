@@ -20,7 +20,7 @@ const activityTypes = [
   {
     type: 'exercise' as const,
     icon: Zap,
-    label: 'exercise',
+    label: 'Personal Workout Plans',
     unit: 'min',
     color: 'from-red-500 to-pink-500',
     quickValues: [5, 10, 15],
@@ -143,7 +143,7 @@ export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps)
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
                     <Activity className="w-4 h-4 text-white" />
                   </div>
-                  <span className="font-medium text-sm">Personalized Exercise</span>
+                  <span className="font-medium text-sm">Personal Workout Plans</span>
                   <Badge variant="outline" className="ml-auto text-xs">
                     Priority
                   </Badge>
