@@ -51,7 +51,7 @@ const activityTypes = [
   },
   {
     type: 'exercise' as const,
-    icon: Scale,
+    icon: Zap,
     label: 'exercise',
     unit: 'min',
     color: 'from-red-500 to-pink-500',
