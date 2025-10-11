@@ -48,4 +48,10 @@ export interface WorkoutSuggestion {
   reason: string;
   cues: string[];
   category: string;
+  gifUrl?: string;
+}
+
+export interface ExerciseGif {
+  cue: string;
+  gifUrl: string;
 }
