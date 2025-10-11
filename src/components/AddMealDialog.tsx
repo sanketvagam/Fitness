@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { MealTypeSelector } from "@/components/MealTypeSelector";
 import { useMealData } from "@/hooks/useMealData";
 import { useMealTemplates } from "@/hooks/useMealTemplates";
 import { useToast } from "@/hooks/use-toast";
@@ -27,7 +26,7 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    type: "breakfast" as "breakfast" | "lunch" | "dinner" | "snack",
+    type: "breakfast" as "breakfast" | "lunch" | "dinner" | "snack" | "late-night-snack",
     notes: "",
   });
 
@@ -118,23 +117,11 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="type">Meal Type</Label>
-            <Select
-              value={formData.type}
-              onValueChange={(value: any) => setFormData({ ...formData, type: value })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="breakfast">Breakfast</SelectItem>
-                <SelectItem value="lunch">Lunch</SelectItem>
-                <SelectItem value="dinner">Dinner</SelectItem>
-                <SelectItem value="snack">Snack</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <MealTypeSelector
+            value={formData.type}
+            onChange={(value) => setFormData({ ...formData, type: value })}
+            autoDetect={true}
+          />
 
           <div>
             <Label htmlFor="name">Select Meal Items</Label>

@@ -73,7 +73,7 @@ export interface Exercise {
 export interface Meal {
   id: string;
   name: string;
-  type: "breakfast" | "lunch" | "dinner" | "snack";
+  type: "breakfast" | "lunch" | "dinner" | "snack" | "late-night-snack";
   calories: number;
   protein: number;
   carbs: number;
