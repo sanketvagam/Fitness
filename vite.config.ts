@@ -12,22 +12,29 @@ export default defineConfig(() => ({
   },
   plugins: [
     react(),
-    // Bundle analyzer - generates stats.html
-    visualizer({
-      open: false,
-      gzipSize: true,
-      brotliSize: true,
-      filename: "dist/stats.html",
-    }),
+    // Bundle analyzer - generates stats.html (only in analyze mode)
+    ...(process.env.ANALYZE
+      ? [
+          visualizer({
+            open: true,
+            gzipSize: true,
+            brotliSize: true,
+            filename: "dist/stats.html",
+            template: "treemap",
+          }),
+        ]
+      : []),
     // Gzip compression
     viteCompression({
       algorithm: "gzip",
       ext: ".gz",
+      deleteOriginFile: false,
     }),
     // Brotli compression (better compression)
     viteCompression({
       algorithm: "brotliCompress",
       ext: ".br",
+      deleteOriginFile: false,
     }),
   ],
   resolve: {

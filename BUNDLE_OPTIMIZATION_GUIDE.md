@@ -274,3 +274,60 @@ manualChunks: {
 **Bundle Size Reduced:** 1.8 MB → 503 KB (largest chunk)
 **Gzip Improvement:** 452 KB → 129 KB (main chunks)
 **Status:** ✅ Production Ready
+
+---
+
+## 🛠️ How to Use Bundle Analyzer
+
+The bundle analyzer is configured to run **only when needed** to avoid WASM conflicts.
+
+### Generate Bundle Analysis:
+```bash
+npm run build:analyze
+```
+
+This will:
+1. Build the project with all optimizations
+2. Generate `dist/stats.html` with interactive treemap
+3. Automatically open in your browser
+
+### What to Look For:
+- **Large Dependencies**: Identify which packages take the most space
+- **Duplicate Code**: Check for code loaded multiple times
+- **Optimization Opportunities**: See which chunks could be split further
+
+---
+
+## ✅ Fixed Issues
+
+### Issue: Visualizer WASM Error
+**Problem:** `rollup-plugin-visualizer` was causing WASM borrowing errors during build.
+
+**Solution:** Made visualizer conditional - only runs with `ANALYZE=true` environment variable.
+
+**Normal Build:**
+```bash
+npm run build
+```
+- Fast build
+- No visualizer
+- No WASM errors
+
+**Analysis Build:**
+```bash
+npm run build:analyze
+```
+- Includes bundle analyzer
+- Generates stats.html
+- Opens automatically
+
+---
+
+## 🎉 Build Status: ✅ FIXED
+
+All issues resolved. Build completes successfully with:
+- 19 optimized chunks
+- Compression enabled (gzip + brotli)
+- No errors or warnings
+- Bundle analyzer available on demand
+
