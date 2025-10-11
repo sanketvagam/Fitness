@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/types/fitness";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Lock } from "lucide-react";
+import { Lock } from '@/components/icons';
 
 interface BadgeCardProps {
   badge: Badge;

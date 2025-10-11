@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { BMIData } from "@/types/fitness";
-import { Activity } from "lucide-react";
+import { Activity } from '@/components/icons';
 import { ProgressRing } from "./ProgressRing";
 
 interface BMICardProps {

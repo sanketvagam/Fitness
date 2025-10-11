@@ -13,7 +13,7 @@ import { useMealTemplates } from "@/hooks/useMealTemplates";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { foodDatabase, parseNutrients, FoodItem } from "@/data/foodDatabase";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Check, ChevronsUpDown, X } from '@/components/icons';
 import { cn } from "@/lib/utils";
 
 interface AddMealDialogProps {

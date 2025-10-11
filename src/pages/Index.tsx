@@ -29,7 +29,7 @@ import { QuickActivityWidget } from "@/components/QuickActivityWidget";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { ActivityAnalytics } from "@/components/ActivityAnalytics";
 import { PersonalWorkoutPlans } from "@/components/workout/PersonalWorkoutPlans";
-import { Target, TrendingUp, Award, Flame, Trophy, Users, Utensils } from "lucide-react";
+import { Target, TrendingUp, Award, Flame, Trophy, Users, Utensils } from '@/components/icons';
 import { UserProfile, BMIData, CalorieData, GoalType } from "@/types/fitness";
 import { calculateBMI, calculateCalories } from "@/utils/calculations";
 import { Button } from "@/components/ui/button";

@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Challenge, UserChallenge } from "@/types/fitness";
-import { Users, Calendar, Trophy } from "lucide-react";
+import { Users, Calendar, Trophy } from '@/components/icons';
 import { motion } from "framer-motion";
 
 interface ChallengeCardProps {

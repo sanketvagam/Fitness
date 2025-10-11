@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash2, Coffee, Sun, Moon, Cookie } from "lucide-react";
+import { Trash2, Coffee, Sun, Moon, Cookie } from '@/components/icons';
 import { Meal } from "@/types/fitness";
 import { Badge } from "@/components/ui/badge";
 

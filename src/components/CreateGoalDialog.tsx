@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Plus, Target, TrendingDown, Dumbbell, Activity, Flame, Calendar as CalendarIcon, CheckCircle2 } from "lucide-react";
+import { Plus, Target, TrendingDown, Dumbbell, Activity, Flame, Calendar as CalendarIcon, CheckCircle2 } from '@/components/icons';
 import { GoalType } from "@/types/fitness";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";

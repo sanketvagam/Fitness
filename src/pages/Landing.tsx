@@ -5,7 +5,7 @@ import { LoginDialog } from '@/components/auth/LoginDialog';
 import { SignupDialog } from '@/components/auth/SignupDialog';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
-import { Target, TrendingUp, Award, Users, Zap, Shield } from 'lucide-react';
+import { Target, TrendingUp, Award, Users, Zap, Shield } from '@/components/icons';
 import { motion } from 'framer-motion';
 
 const Landing = () => {

@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { LeaderboardEntry } from "@/types/fitness";
-import { Trophy, Award, TrendingUp } from "lucide-react";
+import { Trophy, Award, TrendingUp } from '@/components/icons';
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 

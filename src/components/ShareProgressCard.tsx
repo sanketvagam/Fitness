@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DashboardStats, UserLevel } from "@/types/fitness";
-import { Share2, Download } from "lucide-react";
+import { Share2, Download } from '@/components/icons';
 import { useToast } from "@/hooks/use-toast";
 import html2canvas from "html2canvas";
 import { useRef } from "react";
