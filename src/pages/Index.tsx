@@ -283,6 +283,7 @@ const Index = () => {
                 <ActivityFeed activities={getRecentActivities(5)} limit={5} />
               </div>
             </div>
+          </TabsContent>  
 
           {/* Workouts Tab */}
           <TabsContent value="workouts">
