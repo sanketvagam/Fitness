@@ -27,7 +27,7 @@ export function AddActivityDialog({
   goalId, 
   onAddActivity 
 }: AddActivityDialogProps) {
-  const [type, setType] = useState<"workout" | "weight" | "steps" | "distance">("workout");
+  const [type, setType] = useState<"workout" | "weight" | "steps" | "distance" | "running" | "swimming" | "exercise">("workout");
   const [value, setValue] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [notes, setNotes] = useState("");
@@ -71,9 +71,12 @@ export function AddActivityDialog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="exercise">Personalized Exercise (min)</SelectItem>
+                <SelectItem value="running">Running (km)</SelectItem>
+                <SelectItem value="swimming">Swimming (laps)</SelectItem>
+                <SelectItem value="steps">Steps</SelectItem>
                 <SelectItem value="workout">Workout Session</SelectItem>
                 <SelectItem value="distance">Distance (km)</SelectItem>
-                <SelectItem value="steps">Steps</SelectItem>
                 <SelectItem value="weight">Weight (kg)</SelectItem>
               </SelectContent>
             </Select>

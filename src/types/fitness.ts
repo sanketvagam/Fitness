@@ -40,7 +40,7 @@ export interface FitnessGoal {
 export interface Activity {
   id: string;
   goalId: string;
-  type: "workout" | "weight" | "steps" | "distance";
+  type: "workout" | "weight" | "steps" | "distance" | "running" | "swimming" | "exercise";
   value: number;
   date: string;
   notes?: string;

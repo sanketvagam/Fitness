@@ -103,6 +103,9 @@ export const useActivities = () => {
         distance: getActivitiesByType('distance').length,
         steps: getActivitiesByType('steps').length,
         weight: getActivitiesByType('weight').length,
+        running: getActivitiesByType('running').length,
+        swimming: getActivitiesByType('swimming').length,
+        exercise: getActivitiesByType('exercise').length,
       },
     };
   };
