@@ -8,6 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMealData } from "@/hooks/useMealData";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { foodDatabase, parseNutrients } from "@/data/foodDatabase";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface AddMealDialogProps {
   open: boolean;
@@ -27,6 +32,25 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
     fats: "",
     notes: "",
   });
+
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [customInput, setCustomInput] = useState(false);
+
+  const handleFoodSelect = (foodName: string) => {
+    const foodItem = foodDatabase.find(item => item.Food === foodName);
+    if (foodItem) {
+      const nutrients = parseNutrients(foodItem.Nutrients);
+      setFormData({
+        ...formData,
+        name: foodItem.Food,
+        calories: foodItem.ItemCalories.toString(),
+        protein: nutrients.protein.toString(),
+        carbs: nutrients.carbs.toString(),
+        fats: nutrients.fats.toString(),
+      });
+    }
+    setPopoverOpen(false);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,12 +103,73 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="name">Meal Name</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g., Grilled Chicken Salad"
-            />
+            {customInput ? (
+              <div className="flex gap-2">
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g., Grilled Chicken Salad"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCustomInput(false)}
+                >
+                  Select from list
+                </Button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={popoverOpen}
+                      className="w-full justify-between"
+                    >
+                      {formData.name || "Select meal..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[400px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search meals..." />
+                      <CommandList>
+                        <CommandEmpty>No meal found.</CommandEmpty>
+                        <CommandGroup>
+                          {foodDatabase.map((food) => (
+                            <CommandItem
+                              key={food.Food}
+                              value={food.Food}
+                              onSelect={handleFoodSelect}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  formData.name === food.Food ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              {food.Food} - {food.ItemCalories} cal
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCustomInput(true)}
+                >
+                  Custom
+                </Button>
+              </div>
+            )}
           </div>
 
           <div>
