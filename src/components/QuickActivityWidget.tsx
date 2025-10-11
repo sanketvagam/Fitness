@@ -20,7 +20,7 @@ const activityTypes = [
   {
     type: 'exercise' as const,
     icon: Zap,
-    label: 'Personal Workout Plans',
+    label: 'Exercise',
     unit: 'min',
     color: 'from-red-500 to-pink-500',
     quickValues: [5, 10, 15],
