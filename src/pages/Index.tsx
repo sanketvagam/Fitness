@@ -15,7 +15,6 @@ import { UserProfileDialog } from "@/components/UserProfileDialog";
 import { BMICard } from "@/components/BMICard";
 import { CalorieCard } from "@/components/CalorieCard";
 import { WorkoutPlansDialog } from "@/components/WorkoutPlansDialog";
-import { ConnectFitnessApps } from "@/components/ConnectFitnessApps";
 import { MealPlanner } from "@/components/MealPlanner";
 import { BadgeCard } from "@/components/BadgeCard";
 import { LevelProgress } from "@/components/LevelProgress";
@@ -28,7 +27,7 @@ import { UserMenu } from "@/components/UserMenu";
 import { QuickActivityWidget } from "@/components/QuickActivityWidget";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { ActivityAnalytics } from "@/components/ActivityAnalytics";
-import { Target, TrendingUp, Award, Flame, Link2, Trophy, Users } from "lucide-react";
+import { Target, TrendingUp, Award, Flame, Trophy, Users } from "lucide-react";
 import { UserProfile, BMIData, CalorieData, GoalType } from "@/types/fitness";
 import { calculateBMI, calculateCalories } from "@/utils/calculations";
 import { Button } from "@/components/ui/button";
@@ -50,7 +49,6 @@ const Index = () => {
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [bmiData, setBmiData] = useState<BMIData | null>(null);
   const [calorieData, setCalorieData] = useState<CalorieData | null>(null);
-  const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -117,14 +115,6 @@ const Index = () => {
           </div>
           <div className="flex items-center gap-2">
             <ThemeSwitcher />
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIntegrationsDialogOpen(true)}
-              title="Connect Devices"
-            >
-              <Link2 className="w-4 h-4" />
-            </Button>
             <CreateGoalDialog onCreateGoal={addGoal} />
             <UserMenu onOpenProfile={() => setProfileDialogOpen(true)} />
           </div>
@@ -492,10 +482,6 @@ const Index = () => {
         onOpenChange={setProfileDialogOpen}
         onSave={handleSaveProfile}
         currentProfile={userProfile || undefined}
-      />
-      <ConnectFitnessApps
-        open={integrationsDialogOpen}
-        onOpenChange={setIntegrationsDialogOpen}
       />
     </div>
   );
