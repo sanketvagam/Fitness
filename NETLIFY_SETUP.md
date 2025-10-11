@@ -18,6 +18,13 @@ Go to: **Site configuration → Environment variables**
 | `VITE_SUPABASE_URL` | `https://gsurujgfbdxltlndhgpl.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzdXJ1amdmYmR4bHRsbmRoZ3BsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMTg1MzQsImV4cCI6MjA3NTY5NDUzNH0.ETJWmYSQghp2o98bcfqgmTEPRgJdHRWenqiwXMDMkRk` |
 
+#### Google OAuth Configuration (Required for Google Sign-In)
+
+| Variable Name | Value | Notes |
+|--------------|-------|-------|
+| `VITE_GOOGLE_CLIENT_ID` | (your client ID) | Get from Google Cloud Console |
+| `VITE_GOOGLE_CLIENT_SECRET` | (your client secret) | Get from Google Cloud Console |
+
 #### Optional Integrations
 
 | Variable Name | Value | Notes |
