@@ -55,6 +55,7 @@ const Index = () => {
   const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [todayCalories, setTodayCalories] = useState(0);
+  const [showDummyData, setShowDummyData] = useState(true);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -332,35 +333,52 @@ const Index = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Your Badges</h2>
-                  <span className="text-sm text-muted-foreground">
-                    {unlockedBadges.length} of {allBadges.length} unlocked
-                  </span>
-                </div>
-
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-primary" />
-                      Unlocked ({unlockedBadges.length})
-                    </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {unlockedBadges.map((badge) => (
-                        <BadgeCard key={badge.id} badge={badge} isUnlocked={true} />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3 text-muted-foreground">
-                      Locked ({lockedBadges.length})
-                    </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {lockedBadges.map((badge) => (
-                        <BadgeCard key={badge.id} badge={badge} isUnlocked={false} />
-                      ))}
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant={showDummyData ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setShowDummyData(!showDummyData)}
+                    >
+                      {showDummyData ? "Show Real Data" : "Show Dummy Data"}
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                      {unlockedBadges.length} of {allBadges.length} unlocked
+                    </span>
                   </div>
                 </div>
+
+                {showDummyData ? (
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <Trophy className="w-5 h-5 text-primary" />
+                        Unlocked ({unlockedBadges.length})
+                      </h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {unlockedBadges.map((badge) => (
+                          <BadgeCard key={badge.id} badge={badge} isUnlocked={true} />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3 text-muted-foreground">
+                        Locked ({lockedBadges.length})
+                      </h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {lockedBadges.map((badge) => (
+                          <BadgeCard key={badge.id} badge={badge} isUnlocked={false} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Trophy className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                    <h3 className="text-lg font-semibold mb-2">No Real Badge Data</h3>
+                    <p className="text-sm">Badges are stored locally. Complete goals and activities to unlock badges.</p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </TabsContent>
@@ -392,22 +410,39 @@ const Index = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Available Challenges</h2>
-                  <span className="text-sm text-muted-foreground">
-                    {activeChallenges.length} active
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant={showDummyData ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setShowDummyData(!showDummyData)}
+                    >
+                      {showDummyData ? "Show Real Data" : "Show Dummy Data"}
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                      {activeChallenges.length} active
+                    </span>
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {activeChallenges
-                    .filter(c => !joinedChallenges.find(jc => jc.id === c.id))
-                    .map((challenge) => (
-                      <ChallengeCard
-                        key={challenge.id}
-                        challenge={challenge}
-                        onJoin={joinChallenge}
-                        onLeave={leaveChallenge}
-                      />
-                    ))}
-                </div>
+                {showDummyData ? (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {activeChallenges
+                      .filter(c => !joinedChallenges.find(jc => jc.id === c.id))
+                      .map((challenge) => (
+                        <ChallengeCard
+                          key={challenge.id}
+                          challenge={challenge}
+                          onJoin={joinChallenge}
+                          onLeave={leaveChallenge}
+                        />
+                      ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Trophy className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                    <h3 className="text-lg font-semibold mb-2">No Real Challenge Data</h3>
+                    <p className="text-sm">Challenges feature coming soon. Check back later for exciting fitness challenges!</p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </TabsContent>
@@ -419,24 +454,41 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                  <Users className="w-6 h-6 text-white" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">Community</h2>
+                    <p className="text-sm text-muted-foreground">Connect, compete, and share your journey</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold">Community</h2>
-                  <p className="text-sm text-muted-foreground">Connect, compete, and share your journey</p>
-                </div>
+                <Button
+                  variant={showDummyData ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setShowDummyData(!showDummyData)}
+                >
+                  {showDummyData ? "Show Real Data" : "Show Dummy Data"}
+                </Button>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                  <Leaderboard entries={leaderboard} />
+              {showDummyData ? (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2">
+                    <Leaderboard entries={leaderboard} />
+                  </div>
+                  <div>
+                    <ShareProgressCard stats={stats} userLevel={userLevel} userName={userProfile?.name} />
+                  </div>
                 </div>
-                <div>
-                  <ShareProgressCard stats={stats} userLevel={userLevel} userName={userProfile?.name} />
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                  <h3 className="text-lg font-semibold mb-2">No Real Leaderboard Data</h3>
+                  <p className="text-sm">Leaderboard feature coming soon. Compete with friends and track your rankings!</p>
                 </div>
-              </div>
+              )}
             </motion.div>
           </TabsContent>
         </Tabs>
