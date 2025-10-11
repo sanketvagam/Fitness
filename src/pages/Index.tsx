@@ -51,6 +51,8 @@ const Index = () => {
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [bmiData, setBmiData] = useState<BMIData | null>(null);
   const [calorieData, setCalorieData] = useState<CalorieData | null>(null);
+  const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
   const [todayCalories, setTodayCalories] = useState(0);
 
   useEffect(() => {
@@ -131,7 +133,7 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="activities">Activities</TabsTrigger>
@@ -249,6 +251,20 @@ const Index = () => {
                 <ActivityFeed activities={getRecentActivities(5)} limit={5} />
               </div>
             </div>
+
+            {/* BMI & Calorie Section */}
+            {userProfile && bmiData && calorieData && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Your Health Metrics</h2>
+                  <WorkoutPlansDialog />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
+                  <BMICard bmiData={bmiData} />
+                  <CalorieCard calorieData={calorieData} onClick={() => setActiveTab("meals")} />
+                </div>
+              </div>
+            )}
           </TabsContent>
 
           {/* Activities Tab */}

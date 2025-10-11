@@ -15,7 +15,7 @@ export function useMealData() {
   };
 
   const deleteMeal = (id: string) => {
-    setMeals(meals.filter(m => m.id !== id));
+    setMeals((currentMeals) => currentMeals.filter(m => m.id !== id));
   };
 
   const getMealsByDate = (date: Date): Meal[] => {

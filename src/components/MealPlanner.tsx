@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, UtensilsCrossed } from "lucide-react";
+import { Plus, UtensilsCrossed, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AddMealDialog } from "./AddMealDialog";
-import { MealCard } from "./MealCard";
 import { useMealData } from "@/hooks/useMealData";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { CalorieData } from "@/types/fitness";
+import { CalorieData, Meal } from "@/types/fitness";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
 
 interface MealPlannerProps {
   calorieData?: CalorieData;
@@ -15,14 +17,22 @@ interface MealPlannerProps {
 
 export function MealPlanner({ calorieData }: MealPlannerProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { getDailyNutrition, deleteMeal } = useMealData();
-  
+  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+  const [mealDetailsOpen, setMealDetailsOpen] = useState(false);
+  const { meals, getWeeklyNutrition, deleteMeal } = useMealData();
+  const { toast } = useToast();
+
   const today = new Date();
-  const dailyNutrition = getDailyNutrition(today);
+
+  const weeklyData = useMemo(() => {
+    return getWeeklyNutrition();
+  }, [meals]);
+
+  const todayData = weeklyData[weeklyData.length - 1];
   const targetCalories = calorieData?.targetCalories || 2000;
 
-  const remainingCalories = targetCalories - dailyNutrition.totalCalories;
-  const progress = (dailyNutrition.totalCalories / targetCalories) * 100;
+  const remainingCalories = targetCalories - todayData.totalCalories;
+  const progress = (todayData.totalCalories / targetCalories) * 100;
 
   return (
     <motion.div
@@ -56,7 +66,7 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
             <div>
               <p className="text-sm text-muted-foreground">Calories Today</p>
               <p className="text-3xl font-bold">
-                {dailyNutrition.totalCalories}
+                {todayData.totalCalories}
                 <span className="text-lg text-muted-foreground">/{targetCalories}</span>
               </p>
             </div>
@@ -84,23 +94,23 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
           <div className="grid grid-cols-3 gap-4 pt-2">
             <div>
               <p className="text-xs text-muted-foreground">Protein</p>
-              <p className="text-lg font-semibold">{Math.round(dailyNutrition.totalProtein)}g</p>
+              <p className="text-lg font-semibold">{Math.round(todayData.totalProtein)}g</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Carbs</p>
-              <p className="text-lg font-semibold">{Math.round(dailyNutrition.totalCarbs)}g</p>
+              <p className="text-lg font-semibold">{Math.round(todayData.totalCarbs)}g</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Fats</p>
-              <p className="text-lg font-semibold">{Math.round(dailyNutrition.totalFats)}g</p>
+              <p className="text-lg font-semibold">{Math.round(todayData.totalFats)}g</p>
             </div>
           </div>
         </div>
       </Card>
 
-      {/* Meals */}
-      <div className="space-y-4">
-        {dailyNutrition.meals.length === 0 ? (
+      {/* Meals by Day */}
+      <div className="space-y-6">
+        {weeklyData.every(day => day.meals.length === 0) ? (
           <Card className="p-12 text-center">
             <UtensilsCrossed className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="text-lg font-semibold mb-2">No meals logged yet</h3>
@@ -111,18 +121,96 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
             </Button>
           </Card>
         ) : (
-          <div className="grid gap-4">
-            {dailyNutrition.meals.map((meal, index) => (
+          weeklyData.map((dayData, dayIndex) => {
+            if (dayData.meals.length === 0) return null;
+
+            const date = new Date(dayData.date);
+            const isToday = dayData.date === format(today, 'yyyy-MM-dd');
+
+            return (
               <motion.div
-                key={meal.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
+                key={dayData.date}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: dayIndex * 0.1 }}
               >
-                <MealCard meal={meal} onDelete={deleteMeal} />
+                <Card className="overflow-hidden">
+                  <div className="bg-muted/50 px-6 py-4 border-b">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          {format(date, 'EEEE, MMMM d, yyyy')}
+                          {isToday && (
+                            <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">
+                              Today
+                            </span>
+                          )}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Total: {dayData.totalCalories} kcal | Protein: {Math.round(dayData.totalProtein)}g | Carbs: {Math.round(dayData.totalCarbs)}g | Fats: {Math.round(dayData.totalFats)}g
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-6">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Meal Type</TableHead>
+                          <TableHead className="text-right">Calories (kcal/100g)</TableHead>
+                          <TableHead className="text-right">Protein (g)</TableHead>
+                          <TableHead className="text-right">Carbs (g)</TableHead>
+                          <TableHead className="text-right">Fats (g)</TableHead>
+                          <TableHead className="w-10"></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {dayData.meals.map((meal, mealIndex) => {
+                          const sameTypeMeals = dayData.meals.filter(m => m.type === meal.type);
+                          const typeCount = sameTypeMeals.findIndex(m => m.id === meal.id) + 1;
+                          const displayName = `${meal.type}${typeCount}`;
+
+                          return (
+                          <TableRow
+                            key={meal.id}
+                            className="cursor-pointer hover:bg-muted/50"
+                            onClick={() => {
+                              setSelectedMeal(meal);
+                              setMealDetailsOpen(true);
+                            }}
+                          >
+                            <TableCell className="font-medium capitalize">{displayName}</TableCell>
+                            <TableCell className="text-right">{meal.calories}</TableCell>
+                            <TableCell className="text-right">{Math.round(meal.protein)}</TableCell>
+                            <TableCell className="text-right">{Math.round(meal.carbs)}</TableCell>
+                            <TableCell className="text-right">{Math.round(meal.fats)}</TableCell>
+                            <TableCell onClick={(e) => e.stopPropagation()}>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  deleteMeal(meal.id);
+                                  toast({
+                                    title: "Meal deleted",
+                                    description: "The meal has been removed from your log",
+                                  });
+                                }}
+                                className="text-destructive hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </Card>
               </motion.div>
-            ))}
-          </div>
+            );
+          })
         )}
       </div>
 
@@ -130,6 +218,66 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
       />
+
+      <Dialog open={mealDetailsOpen} onOpenChange={setMealDetailsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="capitalize">
+              {selectedMeal && (() => {
+                const sameTypeMeals = meals.filter(m =>
+                  m.type === selectedMeal.type &&
+                  m.date === selectedMeal.date
+                );
+                const typeCount = sameTypeMeals.findIndex(m => m.id === selectedMeal.id) + 1;
+                return `${selectedMeal.type}${typeCount}`;
+              })()}
+            </DialogTitle>
+            <DialogDescription>
+              Meal details and nutritional information
+            </DialogDescription>
+          </DialogHeader>
+          {selectedMeal && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-lg mb-2">{selectedMeal.name}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {format(new Date(selectedMeal.date), 'MMMM d, yyyy')}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Calories</p>
+                  <p className="text-2xl font-bold">{selectedMeal.calories}</p>
+                  <p className="text-xs text-muted-foreground">kcal</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Protein</p>
+                  <p className="text-2xl font-bold">{Math.round(selectedMeal.protein)}</p>
+                  <p className="text-xs text-muted-foreground">grams</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Carbs</p>
+                  <p className="text-2xl font-bold">{Math.round(selectedMeal.carbs)}</p>
+                  <p className="text-xs text-muted-foreground">grams</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Fats</p>
+                  <p className="text-2xl font-bold">{Math.round(selectedMeal.fats)}</p>
+                  <p className="text-xs text-muted-foreground">grams</p>
+                </div>
+              </div>
+
+              {selectedMeal.notes && (
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold">Notes</p>
+                  <p className="text-sm text-muted-foreground">{selectedMeal.notes}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
