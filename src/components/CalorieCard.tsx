@@ -6,9 +6,10 @@ import { ProgressRing } from "./ProgressRing";
 
 interface CalorieCardProps {
   calorieData: CalorieData;
+  onClick?: () => void;
 }
 
-export function CalorieCard({ calorieData }: CalorieCardProps) {
+export function CalorieCard({ calorieData, onClick }: CalorieCardProps) {
   const { getDailyNutrition } = useMealData();
   const todayNutrition = getDailyNutrition(new Date());
 
@@ -39,7 +40,10 @@ export function CalorieCard({ calorieData }: CalorieCardProps) {
   const status = getCalorieStatus();
 
   return (
-    <Card className="p-6 border-border/50 backdrop-blur-sm">
+    <Card
+      className="p-6 border-border/50 backdrop-blur-sm cursor-pointer hover:shadow-lg transition-shadow"
+      onClick={onClick}
+    >
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="font-bold text-lg mb-1">Daily Calories</h3>

@@ -51,6 +51,7 @@ const Index = () => {
   const [bmiData, setBmiData] = useState<BMIData | null>(null);
   const [calorieData, setCalorieData] = useState<CalorieData | null>(null);
   const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -133,7 +134,7 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="activities">Activities</TabsTrigger>
@@ -242,7 +243,7 @@ const Index = () => {
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
                   <BMICard bmiData={bmiData} />
-                  <CalorieCard calorieData={calorieData} />
+                  <CalorieCard calorieData={calorieData} onClick={() => setActiveTab("meals")} />
                 </div>
               </div>
             )}
