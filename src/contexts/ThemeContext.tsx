@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 
-type ThemeMode = 'dark' | 'light' | 'gradient';
+type ThemeMode = 'dark' | 'light';
 
 interface ThemeContextType {
   theme: ThemeMode;
@@ -11,16 +11,24 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useLocalStorage<ThemeMode>('fitforge-theme', 'dark');
+  const [storedTheme, setStoredTheme] = useLocalStorage<string>('fitforge-theme', 'dark');
+  const [theme, setThemeState] = useState<ThemeMode>('dark');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    const validTheme = (storedTheme === 'light' || storedTheme === 'dark') ? storedTheme as ThemeMode : 'dark';
+    setThemeState(validTheme);
+  }, [storedTheme]);
+
+  const setTheme = (newTheme: ThemeMode) => {
+    setThemeState(newTheme);
+    setStoredTheme(newTheme);
+  };
 
   useEffect(() => {
     if (!mounted) return;
-    
+
     const root = document.documentElement;
     root.classList.remove('dark', 'light', 'gradient');
     root.classList.add(theme);
