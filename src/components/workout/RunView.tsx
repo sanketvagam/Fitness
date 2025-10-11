@@ -26,6 +26,21 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
   const [rpe, setRpe] = useState([5]);
   const [pain, setPain] = useState([0]);
   const [notes, setNotes] = useState('');
+  const [countdown, setCountdown] = useState(3);
+  const [showCountdown, setShowCountdown] = useState(true);
+
+  // Countdown timer on mount
+  useEffect(() => {
+    if (countdown > 0 && showCountdown) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdown === 0 && showCountdown) {
+      setShowCountdown(false);
+      setIsRunning(true);
+    }
+  }, [countdown, showCountdown]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -78,6 +93,20 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
   };
 
   const progress = ((suggestion.duration * 60 - timeLeft) / (suggestion.duration * 60)) * 100;
+
+  if (showCountdown) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold">{suggestion.name}</h2>
+          <div className="text-9xl font-bold text-primary animate-pulse">
+            {countdown === 0 ? 'GO!' : countdown}
+          </div>
+          <p className="text-xl text-muted-foreground">Get Ready!</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
