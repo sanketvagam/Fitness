@@ -53,17 +53,10 @@ const activityTypes = [
     type: 'exercise' as const,
     icon: Scale,
     label: 'exercise',
-    unit: 'kg',
+    unit: 'min',
     color: 'from-red-500 to-pink-500',
     quickValues: [5, 10, 15],
   }
-];
-
-const exerciseTypes = [
-  { label: '5 min', value: 5, unit: 'minutes' },
-  { label: '10 min', value: 10, unit: 'minutes' },
-  { label: '15 min', value: 15, unit: 'minutes' },
-  { label: '20 min', value: 20, unit: 'minutes' },
 ];
 
 export function QuickActivityWidget({ onLogActivity }: QuickActivityWidgetProps) {
