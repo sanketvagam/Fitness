@@ -255,19 +255,6 @@ const Index = () => {
               </div>
             </div>
 
-            {/* BMI & Calorie Section */}
-            {userProfile && bmiData && calorieData && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold">Your Health Metrics</h2>
-                  <WorkoutPlansDialog />
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-slide-up">
-                  <BMICard bmiData={bmiData} />
-                  <CalorieCard calorieData={calorieData} onClick={() => setActiveTab("meals")} />
-                </div>
-              </div>
-            )}
           </TabsContent>
 
 
