@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, UtensilsCrossed, Trash2 } from "lucide-react";
@@ -18,7 +18,11 @@ export function MealPlanner({ calorieData }: MealPlannerProps) {
   const { meals, getWeeklyNutrition, deleteMeal } = useMealData();
 
   const today = new Date();
-  const weeklyData = getWeeklyNutrition();
+
+  const weeklyData = useMemo(() => {
+    return getWeeklyNutrition();
+  }, [meals]);
+
   const todayData = weeklyData[weeklyData.length - 1];
   const targetCalories = calorieData?.targetCalories || 2000;
 
