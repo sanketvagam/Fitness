@@ -8,9 +8,10 @@ interface StatCardProps {
   icon: LucideIcon;
   gradient?: boolean;
   className?: string;
+  subtitle?: string;
 }
 
-export function StatCard({ title, value, icon: Icon, gradient, className }: StatCardProps) {
+export function StatCard({ title, value, icon: Icon, gradient, className, subtitle }: StatCardProps) {
   return (
     <Card className={cn(
       "p-6 border-border/50 backdrop-blur-sm transition-all hover:scale-105",
@@ -21,6 +22,9 @@ export function StatCard({ title, value, icon: Icon, gradient, className }: Stat
         <div>
           <p className="text-sm text-muted-foreground mb-1">{title}</p>
           <p className="text-3xl font-bold">{value}</p>
+          {subtitle && (
+            <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+          )}
         </div>
         <div className="p-3 rounded-full bg-primary/10">
           <Icon className="w-6 h-6 text-primary" />

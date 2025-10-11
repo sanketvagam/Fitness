@@ -78,9 +78,22 @@ const Index = () => {
     }
   }, [userProfile]);
 
+  const [todayNutrition, setTodayNutrition] = useState({
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fats: 0
+  });
+
   useEffect(() => {
     const nutrition = getDailyNutrition(new Date());
     setTodayCalories(nutrition.totalCalories);
+    setTodayNutrition({
+      calories: nutrition.totalCalories,
+      protein: nutrition.totalProtein,
+      carbs: nutrition.totalCarbs,
+      fats: nutrition.totalFats
+    });
   }, [meals]);
 
   useEffect(() => {
@@ -191,11 +204,42 @@ const Index = () => {
                 gradient
               />
               <StatCard
-                title="Calories Today"
-                value={todayCalories}
-                icon={Utensils}
+                title="Level"
+                value={userLevel.level}
+                icon={Trophy}
               />
             </div>
+
+            {/* Nutrition Stats */}
+            {calorieData && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
+                <StatCard
+                  title="Calories"
+                  value={`${todayNutrition.calories} / ${calorieData.targetCalories}`}
+                  icon={Flame}
+                  gradient
+                  subtitle="kcal"
+                />
+                <StatCard
+                  title="Protein"
+                  value={`${Math.round(todayNutrition.protein)} / ${calorieData.protein}`}
+                  icon={Utensils}
+                  subtitle="grams"
+                />
+                <StatCard
+                  title="Carbs"
+                  value={`${Math.round(todayNutrition.carbs)} / ${calorieData.carbs}`}
+                  icon={Utensils}
+                  subtitle="grams"
+                />
+                <StatCard
+                  title="Fats"
+                  value={`${Math.round(todayNutrition.fats)} / ${calorieData.fats}`}
+                  icon={Utensils}
+                  subtitle="grams"
+                />
+              </div>
+            )}
 
             
             {/* BMI & Calorie Section */}
