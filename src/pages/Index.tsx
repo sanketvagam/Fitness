@@ -45,7 +45,7 @@ const Index = () => {
   const { allBadges, unlockedBadges, lockedBadges, userLevel, checkAndUnlock } = useAchievements();
   const { activeChallenges, joinedChallenges, userChallenges, joinChallenge, leaveChallenge } = useChallenges();
   const { leaderboard } = useLeaderboard();
-  const { getDailyNutrition } = useMealData();
+  const { getDailyNutrition, meals } = useMealData();
   const [activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState<string>("");
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
@@ -77,7 +77,7 @@ const Index = () => {
   useEffect(() => {
     const nutrition = getDailyNutrition(new Date());
     setTodayCalories(nutrition.totalCalories);
-  }, [getDailyNutrition]);
+  }, [meals]);
 
   useEffect(() => {
     if (!profileLoading && !userProfile && user) {
