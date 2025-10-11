@@ -136,8 +136,14 @@ export const useIntegrations = () => {
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const googleFitClientId = import.meta.env.VITE_GOOGLE_FIT_CLIENT_ID;
 
+        console.log('Google Fit OAuth Config:', {
+          supabaseUrl,
+          hasClientId: !!googleFitClientId,
+          clientIdLength: googleFitClientId?.length,
+        });
+
         if (!googleFitClientId) {
-          toast.error('Google Fit integration not configured');
+          toast.error('Google Fit integration not configured. Please add VITE_GOOGLE_FIT_CLIENT_ID to your .env file');
           return { success: false, error: 'Google Fit client ID not configured' };
         }
 
@@ -145,6 +151,9 @@ export const useIntegrations = () => {
         const scope = 'https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read https://www.googleapis.com/auth/fitness.location.read';
 
         const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleFitClientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&state=${user.id}&access_type=offline&prompt=consent`;
+
+        console.log('Google Fit Auth URL:', authUrl);
+        console.log('Redirect URI:', redirectUri);
 
         window.location.href = authUrl;
 

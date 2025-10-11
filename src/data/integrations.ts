@@ -46,7 +46,7 @@ export const availableIntegrations: Integration[] = [
     category: "fitness",
   },
   {
-    id: "google-fit",
+    id: "google_fit",
     name: "Google Fit",
     description: "Connect your Google Fit data and activity tracking",
     icon: "🎯",
