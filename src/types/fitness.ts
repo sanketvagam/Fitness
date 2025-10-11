@@ -91,18 +91,6 @@ export interface DailyNutrition {
   meals: Meal[];
 }
 
-export interface WeightEntry {
-  id: string;
-  weight: number;
-  date: string;
-}
-
-export interface SleepEntry {
-  id: string;
-  hours: number;
-  date: string;
-}
-
 export interface Badge {
   id: string;
   name: string;
