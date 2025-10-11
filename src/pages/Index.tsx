@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { useSupabaseFitnessData } from "@/hooks/useSupabaseFitnessData";
-import { useProfile } from "@/hooks/useProfile";
-import { useActivities } from "@/hooks/useActivities";
+import { useFitnessData } from "@/hooks/useFitnessData";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useChallenges } from "@/hooks/useChallenges";
 import { useLeaderboard } from "@/hooks/useLeaderboard";
@@ -15,7 +12,7 @@ import { UserProfileDialog } from "@/components/UserProfileDialog";
 import { BMICard } from "@/components/BMICard";
 import { CalorieCard } from "@/components/CalorieCard";
 import { WorkoutPlansDialog } from "@/components/WorkoutPlansDialog";
-import { ConnectFitnessApps } from "@/components/ConnectFitnessApps";
+import { IntegrationsDialog } from "@/components/IntegrationsDialog";
 import { ProgressDashboard } from "@/components/ProgressDashboard";
 import { MealPlanner } from "@/components/MealPlanner";
 import { BadgeCard } from "@/components/BadgeCard";
@@ -25,11 +22,7 @@ import { Leaderboard } from "@/components/Leaderboard";
 import { ShareProgressCard } from "@/components/ShareProgressCard";
 import { HabitTracker } from "@/components/HabitTracker";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { UserMenu } from "@/components/UserMenu";
-import { QuickActivityWidget } from "@/components/QuickActivityWidget";
-import { ActivityFeed } from "@/components/ActivityFeed";
-import { ActivityAnalytics } from "@/components/ActivityAnalytics";
-import { Target, TrendingUp, Award, Flame, Link2, Trophy, Users } from "lucide-react";
+import { Target, TrendingUp, Award, Flame, Settings, Link2, Trophy, Users } from "lucide-react";
 import { UserProfile, BMIData, CalorieData } from "@/types/fitness";
 import { calculateBMI, calculateCalories } from "@/utils/calculations";
 import { Button } from "@/components/ui/button";
@@ -37,11 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 
 const Index = () => {
-  const { user, loading: authLoading, signOut } = useAuth();
-  const navigate = useNavigate();
-  const { goals, addGoal, deleteGoal, addActivity, getStats, refetch: refetchGoals } = useSupabaseFitnessData();
-  const { profile: userProfile, saveProfile, loading: profileLoading } = useProfile();
-  const { activities, getRecentActivities, refetch: refetchActivities } = useActivities();
+  const { goals, addGoal, deleteGoal, addActivity, getStats } = useFitnessData();
   const stats = getStats();
   const { allBadges, unlockedBadges, lockedBadges, userLevel, checkAndUnlock } = useAchievements();
   const { activeChallenges, joinedChallenges, userChallenges, joinChallenge, leaveChallenge } = useChallenges();
@@ -49,15 +38,10 @@ const Index = () => {
   const [activityDialogOpen, setActivityDialogOpen] = useState(false);
   const [selectedGoalId, setSelectedGoalId] = useState<string>("");
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  const [userProfile, setUserProfile] = useLocalStorage<UserProfile | null>("fitforge-profile", null);
   const [bmiData, setBmiData] = useState<BMIData | null>(null);
   const [calorieData, setCalorieData] = useState<CalorieData | null>(null);
   const [integrationsDialogOpen, setIntegrationsDialogOpen] = useState(false);
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/');
-    }
-  }, [user, authLoading, navigate]);
 
   // Check for badge unlocks based on stats
   useEffect(() => {
@@ -75,27 +59,19 @@ const Index = () => {
   }, [userProfile]);
 
   useEffect(() => {
-    if (!profileLoading && !userProfile && user) {
+    if (!userProfile) {
       setProfileDialogOpen(true);
     }
-  }, [profileLoading, userProfile, user]);
+  }, []);
 
   const handleAddActivity = (goalId: string) => {
     setSelectedGoalId(goalId);
     setActivityDialogOpen(true);
   };
 
-  const handleSaveProfile = async (profile: UserProfile) => {
-    await saveProfile(profile);
+  const handleSaveProfile = (profile: UserProfile) => {
+    setUserProfile(profile);
   };
-
-  if (authLoading || profileLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -104,11 +80,11 @@ const Index = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <Target className="w-6 h-6 text-primary-foreground" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                <Target className="w-6 h-6 text-white" />
               </div>
             <div>
-              <h1 className="text-2xl font-bold">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 FitForge
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -126,8 +102,17 @@ const Index = () => {
             >
               <Link2 className="w-4 h-4" />
             </Button>
+            {userProfile && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setProfileDialogOpen(true)}
+                title="Edit Profile"
+              >
+                <Settings className="w-4 h-4" />
+              </Button>
+            )}
             <CreateGoalDialog onCreateGoal={addGoal} />
-            <UserMenu onOpenProfile={() => setProfileDialogOpen(true)} />
           </div>
           </div>
         </div>
@@ -135,9 +120,8 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="activities">Activities</TabsTrigger>
             <TabsTrigger value="progress">Progress</TabsTrigger>
             <TabsTrigger value="meals">Meals</TabsTrigger>
             <TabsTrigger value="habits">Habits</TabsTrigger>
@@ -175,39 +159,6 @@ const Index = () => {
               />
             </div>
 
-            {/* Quick Activity Widget */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-1">
-                <QuickActivityWidget
-                  onLogActivity={async (activity) => {
-                    if (goals.length === 0) {
-                      return;
-                    }
-                    const matchingGoal = goals.find(
-                      (g) =>
-                        (activity.type === 'workout' && g.type === 'gym-frequency') ||
-                        (activity.type === 'distance' && g.type === 'run-distance') ||
-                        (activity.type === 'steps' && g.type === 'daily-steps') ||
-                        (activity.type === 'weight' && g.type === 'weight-loss')
-                    );
-                    if (matchingGoal) {
-                      await addActivity({
-                        goalId: matchingGoal.id,
-                        type: activity.type,
-                        value: activity.value,
-                        date: new Date().toISOString().split('T')[0],
-                      });
-                      refetchActivities();
-                      refetchGoals();
-                    }
-                  }}
-                />
-              </div>
-              <div className="lg:col-span-2">
-                <ActivityFeed activities={getRecentActivities(5)} limit={5} />
-              </div>
-            </div>
-
             {/* BMI & Calorie Section */}
             {userProfile && bmiData && calorieData && (
               <div className="space-y-4">
@@ -221,43 +172,6 @@ const Index = () => {
                 </div>
               </div>
             )}
-          </TabsContent>
-
-          {/* Activities Tab */}
-          <TabsContent value="activities" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-1">
-                <QuickActivityWidget
-                  onLogActivity={async (activity) => {
-                    if (goals.length === 0) {
-                      return;
-                    }
-                    const matchingGoal = goals.find(
-                      (g) =>
-                        (activity.type === 'workout' && g.type === 'gym-frequency') ||
-                        (activity.type === 'distance' && g.type === 'run-distance') ||
-                        (activity.type === 'steps' && g.type === 'daily-steps') ||
-                        (activity.type === 'weight' && g.type === 'weight-loss')
-                    );
-                    if (matchingGoal) {
-                      await addActivity({
-                        goalId: matchingGoal.id,
-                        type: activity.type,
-                        value: activity.value,
-                        date: new Date().toISOString().split('T')[0],
-                      });
-                      refetchActivities();
-                      refetchGoals();
-                    }
-                  }}
-                />
-              </div>
-              <div className="lg:col-span-2">
-                <ActivityFeed activities={activities} />
-              </div>
-            </div>
-
-            <ActivityAnalytics activities={activities} />
           </TabsContent>
 
           {/* Progress Tab */}
@@ -411,7 +325,7 @@ const Index = () => {
               className="space-y-6"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -446,7 +360,7 @@ const Index = () => {
         onSave={handleSaveProfile}
         currentProfile={userProfile || undefined}
       />
-      <ConnectFitnessApps
+      <IntegrationsDialog
         open={integrationsDialogOpen}
         onOpenChange={setIntegrationsDialogOpen}
       />

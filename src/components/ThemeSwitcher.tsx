@@ -1,13 +1,13 @@
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <motion.div
+    <motion.div 
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       className="flex gap-2 p-1 bg-card rounded-lg border"
@@ -29,6 +29,15 @@ export function ThemeSwitcher() {
       >
         <Sun className="w-4 h-4" />
         Light
+      </Button>
+      <Button
+        variant={theme === 'gradient' ? 'default' : 'ghost'}
+        size="sm"
+        onClick={() => setTheme('gradient')}
+        className="gap-2"
+      >
+        <Sparkles className="w-4 h-4" />
+        Gradient
       </Button>
     </motion.div>
   );
