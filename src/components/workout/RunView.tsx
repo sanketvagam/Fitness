@@ -29,6 +29,7 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
   const [countdown, setCountdown] = useState(3);
   const [showCountdown, setShowCountdown] = useState(true);
   const [currentRound, setCurrentRound] = useState(1);
+  const [startTime, setStartTime] = useState<Date | null>(null);
   const totalRounds = 2;
 
   // Countdown timer on mount
@@ -41,6 +42,7 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
     } else if (countdown === 0 && showCountdown) {
       setShowCountdown(false);
       setIsRunning(true);
+      setStartTime(new Date());
     }
   }, [countdown, showCountdown]);
 
@@ -88,7 +90,14 @@ export function RunView({ suggestion, onComplete, onCancel }: RunViewProps) {
   };
 
   const handleFinish = async () => {
-    const actualDuration = Math.ceil((suggestion.duration * 60 - timeLeft) / 60);
+    let actualDuration = suggestion.duration;
+
+    if (startTime) {
+      const endTime = new Date();
+      const elapsedSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
+      actualDuration = Math.max(1, Math.ceil(elapsedSeconds / 60));
+    }
+
     const success = await completeSession(
       suggestion.planId,
       actualDuration,
