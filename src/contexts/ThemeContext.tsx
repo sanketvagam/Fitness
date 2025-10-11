@@ -11,7 +11,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [storedTheme, setStoredTheme] = useLocalStorage<string>('fitforge-theme', 'dark');
+  const [storedTheme, setStoredTheme] = useLocalStorage<string>('habitbar-theme', 'dark');
   const [theme, setThemeState] = useState<ThemeMode>('dark');
   const [mounted, setMounted] = useState(false);
 

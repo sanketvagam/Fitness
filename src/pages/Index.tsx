@@ -106,10 +106,10 @@ const Index = () => {
               </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                FitForge
+                HabitBar
               </h1>
               <p className="text-sm text-muted-foreground">
-                {userProfile ? `Welcome back, ${userProfile.name}! 💪` : "Forge Your Fitness Future"}
+                {userProfile ? `Welcome back, ${userProfile.name}! 💪` : "Raise the bar, never skip the habit"}
               </p>
             </div>
           </div>

@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (data.user) {
         toast({
           title: 'Account created!',
-          description: 'Welcome to FitForge. Let\'s get started!',
+          description: 'Welcome to HabitBar. Let\'s get started!',
         });
       }
 

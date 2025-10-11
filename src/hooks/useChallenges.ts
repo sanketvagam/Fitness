@@ -57,7 +57,7 @@ const CHALLENGES: Challenge[] = [
 ];
 
 export function useChallenges() {
-  const [userChallenges, setUserChallenges] = useLocalStorage<UserChallenge[]>('fitforge-user-challenges', []);
+  const [userChallenges, setUserChallenges] = useLocalStorage<UserChallenge[]>('habitbar-user-challenges', []);
 
   const joinChallenge = (challengeId: string) => {
     const alreadyJoined = userChallenges.some(uc => uc.challengeId === challengeId);

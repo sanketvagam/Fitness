@@ -16,7 +16,7 @@ interface IntegrationsDialogProps {
 }
 
 export function IntegrationsDialog({ open, onOpenChange }: IntegrationsDialogProps) {
-  const [connections, setConnections] = useLocalStorage<ConnectedIntegration[]>("fitforge-integrations", []);
+  const [connections, setConnections] = useLocalStorage<ConnectedIntegration[]>("habitbar-integrations", []);
   const [showInfo, setShowInfo] = useState(true);
 
   const handleConnect = (id: string) => {

@@ -83,7 +83,7 @@ export function ShareProgressCard({ stats, userLevel, userName }: ShareProgressC
               <h2 className="text-3xl font-bold mb-2">
                 {userName || "My"} Fitness Journey
               </h2>
-              <p className="text-white/80 text-sm">Powered by FitForge</p>
+              <p className="text-white/80 text-sm">Powered by HabitBar</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
