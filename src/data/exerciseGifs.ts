@@ -1,5 +1,5 @@
 export const exerciseGifMap: Record<string, string> = {
-  'jumping jacks': 'https://i.pinimg.com/originals/7c/3d/c9/7c3dc91d7b6b6e4e9a6c6c4c8d3a4c1b.gif',
+  'jumping jacks': 'https://cdn.dribbble.com/userupload/23995967/file/original-b7327e47be94975940e98b26277e5ead.gif',
   'push-ups': 'https://media.tenor.com/L7tYMDkJGlMAAAAM/push-up.gif',
   'squats': 'https://media.tenor.com/YwGJNH9kVGAAAAAM/squat.gif',
   'plank': 'https://media.tenor.com/xB6zMVR5yYsAAAAM/plank.gif',
