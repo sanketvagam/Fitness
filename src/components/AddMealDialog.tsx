@@ -8,11 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMealData } from "@/hooks/useMealData";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { foodDatabase, parseNutrients } from "@/data/foodDatabase";
+import { foodDatabase, parseNutrients, FoodItem } from "@/data/foodDatabase";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface AddMealDialogProps {
   open: boolean;
@@ -24,150 +25,175 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
-    name: "",
     type: "breakfast" as "breakfast" | "lunch" | "dinner" | "snack",
-    calories: "",
-    nutrients: "",
-    micronutrients: "",
     notes: "",
   });
 
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [customInput, setCustomInput] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<FoodItem[]>([]);
 
   const handleFoodSelect = (foodName: string) => {
     const foodItem = foodDatabase.find(item => item.Food === foodName);
-    if (foodItem) {
-      setFormData({
-        ...formData,
-        name: foodItem.Food,
-        calories: foodItem.ItemCalories.toString(),
-        nutrients: foodItem.Nutrients,
-        micronutrients: foodItem.Micronutrients,
-      });
+    if (foodItem && !selectedItems.find(item => item.Food === foodName)) {
+      setSelectedItems([...selectedItems, foodItem]);
     }
     setPopoverOpen(false);
   };
 
+  const handleRemoveItem = (foodName: string) => {
+    setSelectedItems(selectedItems.filter(item => item.Food !== foodName));
+  };
+
+  const calculateTotals = () => {
+    return selectedItems.reduce((totals, item) => {
+      const nutrients = parseNutrients(item.Nutrients);
+      return {
+        calories: totals.calories + item.ItemCalories,
+        protein: totals.protein + nutrients.protein,
+        carbs: totals.carbs + nutrients.carbs,
+        fats: totals.fats + nutrients.fats,
+      };
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.calories) {
+
+    if (selectedItems.length === 0) {
       toast({
-        title: "Missing information",
-        description: "Please enter meal name and calories",
+        title: "No items selected",
+        description: "Please select at least one meal item",
         variant: "destructive",
       });
       return;
     }
 
-    const nutrients = parseNutrients(formData.nutrients);
+    const totals = calculateTotals();
+    const mealName = selectedItems.map(item => item.Food).join(", ");
+
     addMeal({
-      name: formData.name,
+      name: mealName,
       type: formData.type,
-      calories: parseFloat(formData.calories),
-      protein: nutrients.protein,
-      carbs: nutrients.carbs,
-      fats: nutrients.fats,
+      calories: totals.calories,
+      protein: totals.protein,
+      carbs: totals.carbs,
+      fats: totals.fats,
       date: format(new Date(), 'yyyy-MM-dd'),
       notes: formData.notes,
     });
 
     toast({
       title: "Meal added!",
-      description: `${formData.name} has been logged`,
+      description: `Meal with ${selectedItems.length} items has been logged`,
     });
 
     setFormData({
-      name: "",
       type: "breakfast",
-      calories: "",
-      nutrients: "",
-      micronutrients: "",
       notes: "",
     });
-    
+    setSelectedItems([]);
+
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Meal</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="name">Meal Name</Label>
-            {customInput ? (
-              <div className="flex gap-2">
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., Grilled Chicken Salad"
-                />
+            <Label htmlFor="name">Select Meal Items</Label>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <PopoverTrigger asChild>
                 <Button
-                  type="button"
                   variant="outline"
-                  size="sm"
-                  onClick={() => setCustomInput(false)}
+                  role="combobox"
+                  aria-expanded={popoverOpen}
+                  className="w-full justify-between"
                 >
-                  Select from list
+                  Select items to add...
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={popoverOpen}
-                      className="w-full justify-between"
-                    >
-                      {formData.name || "Select meal..."}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[400px] p-0">
-                    <Command>
-                      <CommandInput placeholder="Search meals..." />
-                      <CommandList>
-                        <CommandEmpty>No meal found.</CommandEmpty>
-                        <CommandGroup>
-                          {foodDatabase.map((food) => (
-                            <CommandItem
-                              key={food.Food}
-                              value={food.Food}
-                              onSelect={handleFoodSelect}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  formData.name === food.Food ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {food.Food} - {food.ItemCalories} cal
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCustomInput(true)}
-                >
-                  Custom
-                </Button>
-              </div>
-            )}
+              </PopoverTrigger>
+              <PopoverContent className="w-[400px] p-0">
+                <Command>
+                  <CommandInput placeholder="Search meals..." />
+                  <CommandList>
+                    <CommandEmpty>No meal found.</CommandEmpty>
+                    <CommandGroup>
+                      {foodDatabase.map((food) => (
+                        <CommandItem
+                          key={food.Food}
+                          value={food.Food}
+                          onSelect={handleFoodSelect}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              selectedItems.find(item => item.Food === food.Food) ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {food.Food} - {food.ItemCalories} cal
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
+
+          {selectedItems.length > 0 && (
+            <div className="border rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Item Name</TableHead>
+                    <TableHead className="text-right">Calories (kcal/100g)</TableHead>
+                    <TableHead className="text-right">Protein (g)</TableHead>
+                    <TableHead className="text-right">Carbs (g)</TableHead>
+                    <TableHead className="text-right">Fats (g)</TableHead>
+                    <TableHead className="w-10"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {selectedItems.map((item) => {
+                    const nutrients = parseNutrients(item.Nutrients);
+                    return (
+                      <TableRow key={item.Food}>
+                        <TableCell className="font-medium">{item.Food}</TableCell>
+                        <TableCell className="text-right">{item.ItemCalories}</TableCell>
+                        <TableCell className="text-right">{nutrients.protein}</TableCell>
+                        <TableCell className="text-right">{nutrients.carbs}</TableCell>
+                        <TableCell className="text-right">{nutrients.fats}</TableCell>
+                        <TableCell>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveItem(item.Food)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  <TableRow className="font-bold bg-muted/50">
+                    <TableCell>Total</TableCell>
+                    <TableCell className="text-right">{calculateTotals().calories}</TableCell>
+                    <TableCell className="text-right">{calculateTotals().protein.toFixed(1)}</TableCell>
+                    <TableCell className="text-right">{calculateTotals().carbs.toFixed(1)}</TableCell>
+                    <TableCell className="text-right">{calculateTotals().fats.toFixed(1)}</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          )}
 
           <div>
             <Label htmlFor="type">Meal Type</Label>
@@ -187,40 +213,6 @@ export function AddMealDialog({ open, onOpenChange }: AddMealDialogProps) {
             </Select>
           </div>
 
-          <div>
-            <Label htmlFor="calories">Calories (kcal/100g) *</Label>
-            <Input
-              id="calories"
-              type="number"
-              value={formData.calories}
-              onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
-              placeholder="131"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="nutrients">Nutrients</Label>
-            <Textarea
-              id="nutrients"
-              value={formData.nutrients}
-              onChange={(e) => setFormData({ ...formData, nutrients: e.target.value })}
-              placeholder="9.0Protein(g), 48.0Carbs(g), 7.0Fat(g), 6.5Fiber(g), 45Calcium(mg)..."
-              rows={3}
-              className="text-sm"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="micronutrients">Micronutrients</Label>
-            <Textarea
-              id="micronutrients"
-              value={formData.micronutrients}
-              onChange={(e) => setFormData({ ...formData, micronutrients: e.target.value })}
-              placeholder="0Vit A(μg RAE), 0Vit C(mg), 0.18Vit B6(mg), 38Folate(μg)..."
-              rows={2}
-              className="text-sm"
-            />
-          </div>
 
           <div>
             <Label htmlFor="notes">Notes (optional)</Label>
